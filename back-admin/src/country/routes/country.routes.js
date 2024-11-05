@@ -4,7 +4,7 @@ const countryController = require('../contollers/country.controller');
 
 router.post('/countries', countryController.createCountry)
 router.get('/countries', countryController.getCountries)
-router.get('/countries/:id', countryController.getCountry)
+router.get('/countries/:id', countryController.getOneCountry)
 router.put('/countries/:id', countryController.updateCountry)
 router.delete('/countries/:id', countryController.deleteCountry)
 

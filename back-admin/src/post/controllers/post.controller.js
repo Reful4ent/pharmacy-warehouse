@@ -1,22 +1,22 @@
 const db = require('../../../db');
 
-class CountryController {
-    async createCountry(req, res) {
+class PostController {
+    async createPost(req, res) {
         const dataFromRequest = req.body ?? {};
 
         try {
             if (dataFromRequest.name) {
-                const newCountry = await db.query(`INSERT INTO country (name) VALUES ('${dataFromRequest.name}') RETURNING *`);
-                res.status(201).json(newCountry.rows[0]);
+                const newPost = await db.query(`INSERT INTO post (name) VALUES ('${dataFromRequest.name}') RETURNING *`);
+                res.status(201).json(newPost.rows[0]);
             }
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 
-    async getCountries(req, res) {
+    async getPosts(req, res) {
         let requestToDB = `SELECT *
-                                  FROM country`;
+                                  FROM post`;
 
         const dataFromRequest = req.query ?? {};
 
@@ -27,44 +27,44 @@ class CountryController {
 
 
         try {
-            const countries = await db.query(requestToDB);
-            res.status(200).json(countries.rows);
+            const posts = await db.query(requestToDB);
+            res.status(200).json(posts.rows);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 
-    async getOneCountry(req, res) {
+    async getOnePost(req, res) {
         const id = req.params.id;
         try {
-            const country = await db.query(`SELECT * FROM country WHERE id=${id} RETURNING *`);
-            res.status(200).json(country.rows[0]);
+            const post = await db.query(`SELECT * FROM post WHERE id=${id} RETURNING *`);
+            res.status(200).json(post.rows[0]);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 
-    async updateCountry(req, res) {
+    async updatePost(req, res) {
         const id = req.params.id;
         const dataFromRequest = req.body ?? {};
 
         try {
-            const country = await db.query(`UPDATE country SET name='${dataFromRequest.name}' WHERE id=${id} RETURNING *`);
-            res.status(200).json(country.rows[0]);
+            const post = await db.query(`UPDATE post SET name='${dataFromRequest.name}' WHERE id=${id} RETURNING *`);
+            res.status(200).json(post.rows[0]);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 
-    async deleteCountry(req, res) {
+    async deletePost(req, res) {
         const id = req.params.id;
 
         try {
-            const country = await db.query(`DELETE FROM country WHERE id=${id}`);
+            const post = await db.query(`DELETE FROM post WHERE id=${id}`);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 }
 
-module.exports = new CountryController();
+module.exports = new PostController();

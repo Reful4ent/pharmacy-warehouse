@@ -1,22 +1,22 @@
 const db = require('../../../db');
 
-class CountryController {
-    async createCountry(req, res) {
+class StreetController {
+    async createStreet(req, res) {
         const dataFromRequest = req.body ?? {};
 
         try {
             if (dataFromRequest.name) {
-                const newCountry = await db.query(`INSERT INTO country (name) VALUES ('${dataFromRequest.name}') RETURNING *`);
-                res.status(201).json(newCountry.rows[0]);
+                const newStreet = await db.query(`INSERT INTO street (name) VALUES ('${dataFromRequest.name}') RETURNING *`);
+                res.status(201).json(newStreet.rows[0]);
             }
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 
-    async getCountries(req, res) {
+    async getStreets(req, res) {
         let requestToDB = `SELECT *
-                                  FROM country`;
+                                  FROM street`;
 
         const dataFromRequest = req.query ?? {};
 
@@ -27,44 +27,44 @@ class CountryController {
 
 
         try {
-            const countries = await db.query(requestToDB);
-            res.status(200).json(countries.rows);
+            const streets = await db.query(requestToDB);
+            res.status(200).json(streets.rows);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 
-    async getOneCountry(req, res) {
+    async getOneStreet(req, res) {
         const id = req.params.id;
         try {
-            const country = await db.query(`SELECT * FROM country WHERE id=${id} RETURNING *`);
-            res.status(200).json(country.rows[0]);
+            const street = await db.query(`SELECT * FROM street WHERE id=${id} RETURNING *`);
+            res.status(200).json(street.rows[0]);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 
-    async updateCountry(req, res) {
+    async updateStreet(req, res) {
         const id = req.params.id;
         const dataFromRequest = req.body ?? {};
 
         try {
-            const country = await db.query(`UPDATE country SET name='${dataFromRequest.name}' WHERE id=${id} RETURNING *`);
-            res.status(200).json(country.rows[0]);
+            const street = await db.query(`UPDATE street SET name='${dataFromRequest.name}' WHERE id=${id} RETURNING *`);
+            res.status(200).json(street.rows[0]);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 
-    async deleteCountry(req, res) {
+    async deleteStreet(req, res) {
         const id = req.params.id;
 
         try {
-            const country = await db.query(`DELETE FROM country WHERE id=${id}`);
+            const street = await db.query(`DELETE FROM street WHERE id=${id}`);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 }
 
-module.exports = new CountryController();
+module.exports = new StreetController();

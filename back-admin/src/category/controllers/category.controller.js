@@ -1,22 +1,22 @@
 const db = require('../../../db');
 
-class CountryController {
-    async createCountry(req, res) {
+class CategoryController {
+    async createCategory(req, res) {
         const dataFromRequest = req.body ?? {};
 
         try {
             if (dataFromRequest.name) {
-                const newCountry = await db.query(`INSERT INTO country (name) VALUES ('${dataFromRequest.name}') RETURNING *`);
-                res.status(201).json(newCountry.rows[0]);
+                const newCategory = await db.query(`INSERT INTO category (name) VALUES ('${dataFromRequest.name}') RETURNING *`);
+                res.status(201).json(newCategory.rows[0]);
             }
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 
-    async getCountries(req, res) {
+    async getCategories(req, res) {
         let requestToDB = `SELECT *
-                                  FROM country`;
+                                  FROM category`;
 
         const dataFromRequest = req.query ?? {};
 
@@ -27,44 +27,44 @@ class CountryController {
 
 
         try {
-            const countries = await db.query(requestToDB);
-            res.status(200).json(countries.rows);
+            const categories = await db.query(requestToDB);
+            res.status(200).json(categories.rows);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 
-    async getOneCountry(req, res) {
+    async getOneCategory(req, res) {
         const id = req.params.id;
         try {
-            const country = await db.query(`SELECT * FROM country WHERE id=${id} RETURNING *`);
-            res.status(200).json(country.rows[0]);
+            const category = await db.query(`SELECT * FROM category WHERE id=${id} RETURNING *`);
+            res.status(200).json(category.rows[0]);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 
-    async updateCountry(req, res) {
+    async updateCategory(req, res) {
         const id = req.params.id;
         const dataFromRequest = req.body ?? {};
 
         try {
-            const country = await db.query(`UPDATE country SET name='${dataFromRequest.name}' WHERE id=${id} RETURNING *`);
-            res.status(200).json(country.rows[0]);
+            const category = await db.query(`UPDATE category SET name='${dataFromRequest.name}' WHERE id=${id} RETURNING *`);
+            res.status(200).json(category.rows[0]);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 
-    async deleteCountry(req, res) {
+    async deleteCategory(req, res) {
         const id = req.params.id;
 
         try {
-            const country = await db.query(`DELETE FROM country WHERE id=${id}`);
+            const category = await db.query(`DELETE FROM category WHERE id=${id}`);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
     }
 }
 
-module.exports = new CountryController();
+module.exports = new CategoryController();
