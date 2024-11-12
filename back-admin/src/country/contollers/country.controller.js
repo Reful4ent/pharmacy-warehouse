@@ -1,6 +1,7 @@
 const db = require('../../../db');
 
 class CountryController {
+
     async createCountry(req, res) {
         const dataFromRequest = req.body ?? {};
 
@@ -15,19 +16,18 @@ class CountryController {
     }
 
     async getCountries(req, res) {
-        let requestToDB = `SELECT *
-                                  FROM country`;
+        let requestToDB = `SELECT * FROM country 
+                                  WHERE ($1::text IS NULL OR name ILIKE $1)
+        `;
 
-        const dataFromRequest = req.query ?? {};
+        const { name } = req.body;
 
-        if (dataFromRequest.name) {
-            requestToDB += ` WHERE name
-                             ILIKE '%${dataFromRequest.name}%'`;
-        }
-
+        const values = [
+            name ? `%${name}%` : null,
+        ]
 
         try {
-            const countries = await db.query(requestToDB);
+            const countries = await db.query(requestToDB, values);
             res.status(200).json(countries.rows);
         } catch (error) {
             res.status(500).json({ error: error.message });
@@ -37,7 +37,7 @@ class CountryController {
     async getOneCountry(req, res) {
         const id = req.params.id;
         try {
-            const country = await db.query(`SELECT * FROM country WHERE id=${id} RETURNING *`);
+            const country = await db.query(`SELECT * FROM country WHERE id=${id}`);
             res.status(200).json(country.rows[0]);
         } catch (error) {
             res.status(500).json({ error: error.message });
@@ -49,8 +49,12 @@ class CountryController {
         const dataFromRequest = req.body ?? {};
 
         try {
-            const country = await db.query(`UPDATE country SET name='${dataFromRequest.name}' WHERE id=${id} RETURNING *`);
-            res.status(200).json(country.rows[0]);
+            if(dataFromRequest.name) {
+                const country = await db.query(`UPDATE country SET name='${dataFromRequest.name}' WHERE id=${id} RETURNING *`);
+                res.status(200).json(country.rows[0]);
+            } else {
+                res.status(400).json({ error: "Bad request" });
+            }
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

@@ -15,19 +15,18 @@ class StreetController {
     }
 
     async getStreets(req, res) {
-        let requestToDB = `SELECT *
-                                  FROM street`;
+        let requestToDB = `SELECT * FROM street 
+                                  WHERE ($1::text IS NULL OR name ILIKE $1)
+        `;
 
-        const dataFromRequest = req.query ?? {};
+        const { name } = req.body;
 
-        if (dataFromRequest.name) {
-            requestToDB += ` WHERE name
-                             ILIKE '%${dataFromRequest.name}%'`;
-        }
-
+        const values = [
+            name ? `%${name}%` : null,
+        ]
 
         try {
-            const streets = await db.query(requestToDB);
+            const streets = await db.query(requestToDB, values);
             res.status(200).json(streets.rows);
         } catch (error) {
             res.status(500).json({ error: error.message });
@@ -37,7 +36,7 @@ class StreetController {
     async getOneStreet(req, res) {
         const id = req.params.id;
         try {
-            const street = await db.query(`SELECT * FROM street WHERE id=${id} RETURNING *`);
+            const street = await db.query(`SELECT * FROM street WHERE id=${id}`);
             res.status(200).json(street.rows[0]);
         } catch (error) {
             res.status(500).json({ error: error.message });
@@ -49,8 +48,12 @@ class StreetController {
         const dataFromRequest = req.body ?? {};
 
         try {
-            const street = await db.query(`UPDATE street SET name='${dataFromRequest.name}' WHERE id=${id} RETURNING *`);
-            res.status(200).json(street.rows[0]);
+            if (dataFromRequest.name) {
+                const street = await db.query(`UPDATE street SET name='${dataFromRequest.name}' WHERE id=${id} RETURNING *`);
+                res.status(200).json(street.rows[0]);
+            } else {
+                res.status(400).json({ error: "Bad request" });
+            }
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

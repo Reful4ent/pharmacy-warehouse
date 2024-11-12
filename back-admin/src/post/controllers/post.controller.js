@@ -15,19 +15,19 @@ class PostController {
     }
 
     async getPosts(req, res) {
-        let requestToDB = `SELECT *
-                                  FROM post`;
+        let requestToDB = `SELECT * FROM post 
+                                  WHERE ($1::text IS NULL OR name ILIKE $1)
+        `;
 
-        const dataFromRequest = req.query ?? {};
+        const { name } = req.body;
 
-        if (dataFromRequest.name) {
-            requestToDB += ` WHERE name
-                             ILIKE '%${dataFromRequest.name}%'`;
-        }
+        const values = [
+            name ? `%${name}%` : null,
+        ]
 
 
         try {
-            const posts = await db.query(requestToDB);
+            const posts = await db.query(requestToDB, values);
             res.status(200).json(posts.rows);
         } catch (error) {
             res.status(500).json({ error: error.message });
@@ -37,7 +37,7 @@ class PostController {
     async getOnePost(req, res) {
         const id = req.params.id;
         try {
-            const post = await db.query(`SELECT * FROM post WHERE id=${id} RETURNING *`);
+            const post = await db.query(`SELECT * FROM post WHERE id=${id}`);
             res.status(200).json(post.rows[0]);
         } catch (error) {
             res.status(500).json({ error: error.message });
@@ -49,8 +49,12 @@ class PostController {
         const dataFromRequest = req.body ?? {};
 
         try {
-            const post = await db.query(`UPDATE post SET name='${dataFromRequest.name}' WHERE id=${id} RETURNING *`);
-            res.status(200).json(post.rows[0]);
+            if (dataFromRequest.name) {
+                const post = await db.query(`UPDATE post SET name='${dataFromRequest.name}' WHERE id=${id} RETURNING *`);
+                res.status(200).json(post.rows[0]);
+            } else {
+                res.status(400).json({ error: "Bad request" });
+            }
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

@@ -8,9 +8,20 @@ const categoryRouter = require('./src/category/routes/category.routes');
 const packageRouter = require('./src/package/routes/package.routes');
 const postRouter = require('./src/post/routes/post.routes');
 const streetRouter = require('./src/street/routes/street.routes');
+const customRouter = require('./src/custom/routes/custom.routes');
+const employeeRouter = require('./src/employee/routes/employee.routes');
 
+const routes = [
+    countryRouter,
+    bankRouter,
+    categoryRouter,
+    packageRouter,
+    postRouter,
+    streetRouter,
+    customRouter,
+    employeeRouter,
+];
 
-const routes = [countryRouter,bankRouter,categoryRouter,packageRouter,postRouter,streetRouter];
 const app = express();
 
 app.use(express.json());

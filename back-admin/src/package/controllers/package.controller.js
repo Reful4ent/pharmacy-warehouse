@@ -15,19 +15,19 @@ class PackageController {
     }
 
     async getPackages(req, res) {
-        let requestToDB = `SELECT *
-                                  FROM package`;
+        let requestToDB = `SELECT * FROM package 
+                                  WHERE ($1::text IS NULL OR name ILIKE $1)
+        `;
 
-        const dataFromRequest = req.query ?? {};
+        const { name } = req.body;
 
-        if (dataFromRequest.name) {
-            requestToDB += ` WHERE name
-                             ILIKE '%${dataFromRequest.name}%'`;
-        }
+        const values = [
+            name ? `%${name}%` : null,
+        ]
 
 
         try {
-            const packages = await db.query(requestToDB);
+            const packages = await db.query(requestToDB, values);
             res.status(200).json(packages.rows);
         } catch (error) {
             res.status(500).json({ error: error.message });
@@ -37,7 +37,7 @@ class PackageController {
     async getOnePackage(req, res) {
         const id = req.params.id;
         try {
-            const onePackage = await db.query(`SELECT * FROM package WHERE id=${id} RETURNING *`);
+            const onePackage = await db.query(`SELECT * FROM package WHERE id=${id}`);
             res.status(200).json(onePackage.rows[0]);
         } catch (error) {
             res.status(500).json({ error: error.message });
@@ -49,8 +49,12 @@ class PackageController {
         const dataFromRequest = req.body ?? {};
 
         try {
-            const onePackage = await db.query(`UPDATE package SET name='${dataFromRequest.name}' WHERE id=${id} RETURNING *`);
-            res.status(200).json(onePackage.rows[0]);
+            if (dataFromRequest.name) {
+                const onePackage = await db.query(`UPDATE package SET name='${dataFromRequest.name}' WHERE id=${id} RETURNING *`);
+                res.status(200).json(onePackage.rows[0]);
+            } else {
+                res.status(400).json({ error: "Bad request" });
+            }
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

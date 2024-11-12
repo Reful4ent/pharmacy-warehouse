@@ -14,19 +14,18 @@ class BankController {
     }
 
     async getBanks(req, res) {
-        let requestToDB = `SELECT *
-                                  FROM bank`;
+        let requestToDB = `SELECT * FROM bank 
+                                  WHERE ($1::text IS NULL OR name ILIKE $1)
+        `;
 
-        const dataFromRequest = req.query ?? {};
+        const { name } = req.body ?? {};
 
-        if (dataFromRequest.name) {
-            requestToDB += ` WHERE name
-                             ILIKE '%${dataFromRequest.name}%'`;
-        }
-
+        const values = [
+            name ? `%${name}%` : null,
+        ]
 
         try {
-            const banks = await db.query(requestToDB);
+            const banks = await db.query(requestToDB, values);
             res.status(200).json(banks.rows);
         } catch (error) {
             res.status(500).json({ error: error.message });
@@ -35,8 +34,9 @@ class BankController {
 
     async getOneBank(req, res) {
         const id = req.params.id;
+        console.log(id)
         try {
-            const bank = await db.query(`SELECT * FROM bank WHERE id=${id} RETURNING *`);
+            const bank = await db.query(`SELECT * FROM bank WHERE id=${id}`);
             res.status(200).json(bank.rows[0]);
         } catch (error) {
             res.status(500).json({ error: error.message });
@@ -48,8 +48,12 @@ class BankController {
         const dataFromRequest = req.body ?? {};
 
         try {
-            const bank = await db.query(`UPDATE bank SET name='${dataFromRequest.name}' WHERE id=${id} RETURNING *`);
-            res.status(200).json(bank.rows[0]);
+            if (dataFromRequest.name) {
+                const bank = await db.query(`UPDATE bank SET name='${dataFromRequest.name}' WHERE id=${id} RETURNING *`);
+                res.status(200).json(bank.rows[0]);
+            } else {
+                res.status(400).json({ error: "Bad request" });
+            }
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
