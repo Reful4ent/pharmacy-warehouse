@@ -8,6 +8,8 @@ class CategoryController {
             if (dataFromRequest.name) {
                 const newCategory = await db.query(`INSERT INTO category (name) VALUES ('${dataFromRequest.name}') RETURNING *`);
                 res.status(201).json(newCategory.rows[0]);
+            } else {
+                res.status(400).json({ error: "Bad request" });
             }
         } catch (error) {
             res.status(500).json({ error: error.message });

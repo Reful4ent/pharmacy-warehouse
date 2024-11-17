@@ -8,6 +8,8 @@ class PostController {
             if (dataFromRequest.name) {
                 const newPost = await db.query(`INSERT INTO post (name) VALUES ('${dataFromRequest.name}') RETURNING *`);
                 res.status(201).json(newPost.rows[0]);
+            } else {
+                res.status(400).json({ error: "Bad request" });
             }
         } catch (error) {
             res.status(500).json({ error: error.message });

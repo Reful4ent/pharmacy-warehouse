@@ -6,8 +6,12 @@ class BankController {
         const dataFromRequest = req.body ?? {};
 
         try {
-            const newBank = await db.query(`INSERT INTO bank (name) VALUES ('${dataFromRequest.name}') RETURNING *`);
-            res.status(201).json(newBank.rows[0]);
+            if (dataFromRequest.name) {
+                const newBank = await db.query(`INSERT INTO bank (name) VALUES ('${dataFromRequest.name}') RETURNING *`);
+                res.status(201).json(newBank.rows[0]);
+            } else {
+                res.status(400).json({ error: "Bad request" });
+            }
         } catch (error) {
             res.status(500).json({error: error.message})
         }
@@ -34,7 +38,7 @@ class BankController {
 
     async getOneBank(req, res) {
         const id = req.params.id;
-        console.log(id)
+
         try {
             const bank = await db.query(`SELECT * FROM bank WHERE id=${id}`);
             res.status(200).json(bank.rows[0]);

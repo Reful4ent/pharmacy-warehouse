@@ -9,6 +9,8 @@ class CountryController {
             if (dataFromRequest.name) {
                 const newCountry = await db.query(`INSERT INTO country (name) VALUES ('${dataFromRequest.name}') RETURNING *`);
                 res.status(201).json(newCountry.rows[0]);
+            } else {
+                res.status(400).json({ error: "Bad request" });
             }
         } catch (error) {
             res.status(500).json({ error: error.message });
