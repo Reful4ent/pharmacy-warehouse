@@ -21,6 +21,7 @@ const statementMedicineRouter = require('./src/statement_medicine/routes/stateme
 const medicineCategoryRouter = require('./src/medicine_category/routes/medicine_category.routes');
 const medicinePackageRouter = require('./src/medicine_category/routes/medicine_category.routes');
 const medicineProducerRouter = require('./src/medicine_category/routes/medicine_category.routes');
+const menuContextRouter = require('./src/menu_context/routes/menu_context.routes');
 
 const routes = [
     countryRouter,
@@ -42,6 +43,7 @@ const routes = [
     medicineCategoryRouter,
     medicinePackageRouter,
     medicineProducerRouter,
+    menuContextRouter,
 ];
 
 const app = express();
