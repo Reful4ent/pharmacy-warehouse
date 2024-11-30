@@ -4,5 +4,5 @@
 - Node.js (express.js)
 - PostgreSQL
 
-### Fronted:
-- Refine
+### Frontend:
+- React TS
