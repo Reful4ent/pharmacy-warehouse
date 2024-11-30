@@ -1,11 +1,17 @@
+import {useRoutes} from "react-router-dom";
+import {router} from './router/router'
+import {ConfigProvider} from "./context/ConfigProvider/ConfigProvider.tsx";
+import {FC} from "react";
+import "./index.css"
 
-import './App.css'
+export const App : FC = () => {
 
-function App() {
-
-  return (
-    <></>
-  )
+    return (
+        <>
+            <ConfigProvider>
+                { useRoutes(router) }
+            </ConfigProvider>
+        </>
+    )
 }
 
-export default App
