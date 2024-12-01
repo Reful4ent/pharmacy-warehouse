@@ -1,9 +1,13 @@
 import {FC} from "react";
 
-export const Logo: FC = () => {
+interface LogoProps {
+    fill: string;
+}
+
+export const Logo: FC<LogoProps> = ({fill}) => {
     return (
         <>
-            <svg fill="#ffffff" height="50px" width="50px" version="1.1" id="Capa_1"
+            <svg fill={fill} height="50px" width="50px" version="1.1" id="Capa_1"
                  xmlns="http://www.w3.org/2000/svg"
                  style={{paddingTop: 5}}
                  viewBox="0 0 297 297" >

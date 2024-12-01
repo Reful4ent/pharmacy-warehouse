@@ -14,5 +14,5 @@ export interface IContext {
 }
 
 export interface IConfigContextValue {
-    context: IContext | null;
+    config: IContext | null;
 }

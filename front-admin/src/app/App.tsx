@@ -3,15 +3,17 @@ import {router} from './router/router'
 import {ConfigProvider} from "./context/ConfigProvider/ConfigProvider.tsx";
 import {FC} from "react";
 import "./index.css"
+import {AuthProvider} from "./context/AuthProvider/AuthProvider.tsx";
 
 export const App : FC = () => {
 
     return (
         <>
-            <ConfigProvider>
-                { useRoutes(router) }
-            </ConfigProvider>
+            <AuthProvider>
+                <ConfigProvider>
+                    { useRoutes(router) }
+                </ConfigProvider>
+            </AuthProvider>
         </>
     )
 }
-

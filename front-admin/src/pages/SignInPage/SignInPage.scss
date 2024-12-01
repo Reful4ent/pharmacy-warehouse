@@ -1,0 +1,108 @@
+@font-face {
+  font-family: 'Urbanist';
+  src: local('Urbanist'),
+  url('/front-admin/public/fonts/Urbanist/Urbanist-VariableFont_wght.woff2') format('woff2'),
+  url('/front-admin/public/fonts/Urbanist/Urbanist-VariableFont_wght.woff') format('woff'),
+  url('/front-admin/public/fonts/Urbanist/Urbanist-VariableFont_wght.ttf') format('ttf'),
+  url('/front-admin/public/fonts/Urbanist/Urbanist-VariableFont_wght.eot') format('eot');
+}
+
+
+#root {
+  width: 100%;
+  height: 100%;
+  .sign-in-main{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .sign-in-content {
+      width: 20%;
+      padding: 30px;
+      border: 1px solid #00000026;
+      border-radius: 20px;
+      box-shadow: 0px 0px 49px 9px #00000026;
+    }
+
+    .sign-in__to-sign-up {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+
+.sign-in-form {
+  display: flex;
+  flex-direction: column;
+
+  .sign-in__text {
+    margin: 5px 0px 5px 0px;
+    font: {
+      family: Urbanist;
+      size: 18px;
+    }
+  }
+
+  .sign-in__input {
+    margin: 5px 0px 5px 0px;
+    padding: 10px;
+    font: {
+      family: Urbanist;
+      size: 16px;
+    }
+    border-radius: 5px;
+    border: 1px solid #00000026;
+    &:focus{
+      outline: #04aa6d;
+      border-color: #04aa6d;
+    }
+  }
+
+  .sign-in__error {
+    margin: 5px 0px 5px 0px;
+    color: #ae0303;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: {
+      family: Urbanist;
+      size: 14px;
+    }
+  }
+
+  .sign-in__btn {
+    margin-top:20px;
+    padding: 10px;
+    background-color: #04aa6d;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font: {
+      family: Urbanist;
+      weight: 800;
+      size: 20px;
+    }
+    &:hover {
+      background-color: #088557;
+    }
+  }
+}
+
+.header__logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .logo__text {
+    font: {
+      family: Urbanist;
+      weight: 600;
+      size: 30px;
+    };
+  }
+}
+

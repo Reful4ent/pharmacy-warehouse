@@ -1,7 +1,7 @@
 import {FC, useState} from "react";
 import {HeaderMenuItem} from "../../../app/context/ConfigProvider/types.ts";
 import "./MenuItem.scss"
-import {urlRoute} from "../../../shared/api/route.ts";
+import {urlPage} from "../../../shared/api/route.ts";
 import {CaretDown} from "../../../shared/components/SVG/CaretDown/CaretDown.tsx";
 
 interface MenuItemProps {
@@ -49,7 +49,7 @@ export const DropdownMenuItem: FC<MenuItemProps> = ({ item }) => {
 
                 )
                 :
-                (<a className="dropdown-item__link" href={urlRoute + item.function}>
+                (<a className="dropdown-item__link" href={urlPage + item.function}>
                     {item.name}
                 </a>)
             }

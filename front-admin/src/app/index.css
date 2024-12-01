@@ -1,3 +1,12 @@
+@font-face {
+    font-family: 'Urbanist';
+    src: local('Urbanist'),
+    url('/front-admin/public/fonts/Urbanist/Urbanist-VariableFont_wght.woff2') format('woff2'),
+    url('/front-admin/public/fonts/Urbanist/Urbanist-VariableFont_wght.woff') format('woff'),
+    url('/front-admin/public/fonts/Urbanist/Urbanist-VariableFont_wght.ttf') format('ttf'),
+    url('/front-admin/public/fonts/Urbanist/Urbanist-VariableFont_wght.eot') format('eot');
+}
+
 html, body{
     height: 100%;
     width: 100%;
