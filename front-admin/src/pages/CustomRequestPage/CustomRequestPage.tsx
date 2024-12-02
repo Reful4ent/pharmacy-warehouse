@@ -40,7 +40,7 @@ export const CustomRequestPage: FC = () => {
                 </ConfigProvider>
             </div>
             <p className="error">{error}</p>
-            <Table dataSource={dataSource} columns={columns} className="data-table"/>
+            <Table bordered dataSource={dataSource} columns={columns} className="data-table"/>
         </div>
     )
 }

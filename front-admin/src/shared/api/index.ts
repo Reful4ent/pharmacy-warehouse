@@ -76,3 +76,33 @@ export const sendCustomRequest = async (request: string) => {
         };
     }
 }
+
+export const getStreets = async () => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/streets',
+        )
+        return response.data
+    } catch (error: any) {
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const deleteStreet = async (id: number) => {
+    try {
+        console.log(id)
+        await axios.delete(
+            urlRoute + '/streets/' + id,
+        ).finally()
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
