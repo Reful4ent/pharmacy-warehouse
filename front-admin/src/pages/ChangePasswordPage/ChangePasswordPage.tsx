@@ -1,12 +1,44 @@
-import {FC, useCallback} from "react";
+import {FC, useCallback, useState} from "react";
 import {Button, ConfigProvider, Form, Input} from "antd";
 import "./ChangePasswordPage.scss"
+import {useAuth} from "../../app/context/AuthProvider/context.ts";
 
 export const ChangePasswordPage: FC = () => {
+    const auth = useAuth();
     const [form] = Form.useForm();
+    const [error, setError] = useState<string>('')
+    const [finished, setFinished] = useState<boolean>(false)
 
     const handlePasswordChange = useCallback(async () => {
-        console.log("banane")
+        setFinished(false)
+
+        const currentPassword = form.getFieldValue('password');
+        const newPassword = form.getFieldValue('newPassword');
+        const newPasswordRepeat = form.getFieldValue('newPasswordRepeat')
+
+        if(currentPassword !== auth?.user?.password) {
+            setError("Введите верный текущий пароль")
+            return;
+        }
+
+        if(newPassword !== newPasswordRepeat) {
+            setError("Новые пароли должны совпадать!")
+            return;
+        }
+
+        const resultOfUpdate = await auth?.updateUser({
+            id: auth?.user?.id,
+            login: auth?.user?.login,
+            password: newPassword,
+        })
+
+        if (resultOfUpdate) {
+            setFinished(true)
+            setError('')
+        } else {
+            setFinished(false)
+            setError('')
+        }
     },[])
 
     return (
@@ -44,6 +76,12 @@ export const ChangePasswordPage: FC = () => {
                                    className="change-password-form__input">
                             <Input.Password/>
                         </Form.Item>
+                        {error &&
+                            <p className='error-message'>{error}</p>
+                        }
+                        {finished &&
+                            <p className="finished-message">Пароль был успешно сменен!</p>
+                        }
                         <Form.Item>
                             <Button type="primary" block htmlType="submit" className="form-submit-button">Изменить пароль</Button>
                         </Form.Item>

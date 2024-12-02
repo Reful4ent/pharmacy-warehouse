@@ -36,7 +36,7 @@ export const AuthProvider:FC<PropsWithChildren> = ({children}) => {
                 }
                 setUser(tempUser);
                 setIsAuthenticated(true)
-                localStorage.setItem("user", JSON.stringify({id: tempUser.id, login: data.login}));
+                localStorage.setItem("user", JSON.stringify({id: tempUser.id, login: data.login, password: data.password}));
                 return true
             }
             localStorage.removeItem("user");
@@ -77,7 +77,7 @@ export const AuthProvider:FC<PropsWithChildren> = ({children}) => {
                     password: data.password,
                 }
                 setUser(tempUser);
-                localStorage.setItem("user", JSON.stringify({id: tempUser.id, login: data.login}));
+                localStorage.setItem("user", JSON.stringify({id: tempUser.id, login: data.login, password: data.password}));
                 return true
             }
             return false;
