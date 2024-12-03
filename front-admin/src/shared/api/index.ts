@@ -666,4 +666,128 @@ export const deleteBuyer = async (id: number) => {
 }
 
 
+export const getProducers = async () => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/producers',
+        )
+        return response.data
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
 
+export const deleteProducer = async (id: number) => {
+    try {
+        await axios.delete(
+            urlRoute + '/producers/' + id,
+        ).finally()
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+
+
+
+export const getSuppliers = async () => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/suppliers',
+        )
+        return response.data
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const deleteSupplier = async (id: number) => {
+    try {
+        await axios.delete(
+            urlRoute + '/suppliers/' + id,
+        ).finally()
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+
+
+export const getInvoices = async () => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/invoices',
+        )
+        return response.data
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const deleteInvoice = async (id: number) => {
+    try {
+        await axios.delete(
+            urlRoute + '/invoices/' + id,
+        ).finally()
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+
+export const getStatements = async () => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/statements',
+        )
+        return response.data
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const deleteStatement = async (id: number) => {
+    try {
+        await axios.delete(
+            urlRoute + '/statements/' + id,
+        ).finally()
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}

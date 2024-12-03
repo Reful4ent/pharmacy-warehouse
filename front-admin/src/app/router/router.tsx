@@ -15,11 +15,11 @@ import {
     EditPostPage,
     EditStreetPage, EmployeePage,
     ErrorPage,
-    HomePage, MedicinePage,
+    HomePage, InvoicePage, MedicinePage,
     PackagePage,
-    PostPage,
-    SignInPage,
-    StreetPage
+    PostPage, ProducerPage,
+    SignInPage, StatementPage,
+    StreetPage, SupplierPage
 } from "./lazyPages.tsx";
 import {PrivateRoute} from "../../features/PrivateRoute/PrivateRoute.tsx";
 import {SignLayout} from "../layouts/SignLayout/ui/SignLayout.tsx";
@@ -126,6 +126,22 @@ export const router : RouteObject[] =[
             {
                 path: 'buyers/',
                 element: <PrivateRoute><BuyerPage/></PrivateRoute>
+            },
+            {
+                path: 'producers/',
+                element: <PrivateRoute><ProducerPage/></PrivateRoute>
+            },
+            {
+                path: 'suppliers/',
+                element: <PrivateRoute><SupplierPage/></PrivateRoute>
+            },
+            {
+                path: 'invoices/',
+                element: <PrivateRoute><InvoicePage/></PrivateRoute>
+            },
+            {
+                path: 'statements/',
+                element: <PrivateRoute><StatementPage/></PrivateRoute>
             },
             {
                 path: "*",

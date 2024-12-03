@@ -26,3 +26,7 @@ export const CreateCategoryPage = lazy(() => import('../../pages/FormsPages/Cate
 export const MedicinePage = lazy(() => import('../../pages/FormsPages/MedicinePage/MedicinePage').then(m => ({default: m.MedicinePage})))
 export const EmployeePage = lazy(() => import('../../pages/FormsPages/EmployeePage/EmployeePage').then(m => ({default: m.EmployeePage})))
 export const BuyerPage = lazy(() => import('../../pages/FormsPages/BuyerPage/BuyerPage.tsx').then(m => ({default: m.BuyerPage})))
+export const ProducerPage = lazy(() => import('../../pages/FormsPages/ProducerPage/ProducerPage').then(m => ({default: m.ProducerPage})))
+export const SupplierPage = lazy(() => import('../../pages/FormsPages/SupplierPage/SupplierPage').then(m => ({default: m.SupplierPage})))
+export const InvoicePage = lazy(() => import('../../pages/FormsPages/InvoicePage/InvoicePage').then(m => ({default: m.InvoicePage})))
+export const StatementPage = lazy(() => import('../../pages/FormsPages/StatementPage/StatementPage').then(m => ({default: m.StatementPage})))
