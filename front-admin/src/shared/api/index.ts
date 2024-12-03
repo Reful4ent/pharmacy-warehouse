@@ -1,10 +1,12 @@
 import axios from "axios";
 import {urlRoute} from "./route.ts";
 import {Permission} from "./types.ts";
-import {Street} from "../../pages/StreetPage/StreetPage.tsx";
-import {Post} from "../../pages/PostPage/PostPage.tsx";
-import {Bank} from "../../pages/BankPage/BankPage.tsx";
-import {Country} from "../../pages/CountryPage/CountryPage.tsx";
+import {Street} from "../../pages/FormsPages/StreetPage/StreetPage.tsx";
+import {Post} from "../../pages/FormsPages/PostPage/PostPage.tsx";
+import {Bank} from "../../pages/FormsPages/BankPage/BankPage.tsx";
+import {Country} from "../../pages/FormsPages/CountryPage/CountryPage.tsx";
+import {Package} from "../../pages/FormsPages/PackagePage/PackagePage.tsx";
+import {Category} from "../../pages/FormsPages/CategoryPage/CategoryPage.tsx";
 
 
 export const getConfig = async () => {
@@ -407,3 +409,261 @@ export const getCountry = async (id: number) => {
         };
     }
 }
+
+export const getCategories = async () => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/categories',
+        )
+        return response.data
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const deleteCategory = async (id: number) => {
+    try {
+        await axios.delete(
+            urlRoute + '/categories/' + id,
+        ).finally()
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const createCategory = async (name: string) => {
+    try {
+        await axios.post(
+            urlRoute + '/categories/create',
+            {
+                name: name
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const updateCategory = async (category: Category) => {
+    try {
+        await axios.put(
+            urlRoute + '/categories/' + category.id,
+            {
+                name: category.name,
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const getCategory = async (id: number) => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/categories/' + id,
+        )
+        return response.data
+    } catch (error: any) {
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+
+export const getPackages = async () => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/packages',
+        )
+        return response.data
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const deletePackage = async (id: number) => {
+    try {
+        await axios.delete(
+            urlRoute + '/packages/' + id,
+        ).finally()
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const createPackage = async (name: string) => {
+    try {
+        await axios.post(
+            urlRoute + '/packages/create',
+            {
+                name: name
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+
+export const updatePackage = async (_package: Package) => {
+    try {
+        await axios.put(
+            urlRoute + '/packages/' + _package.id,
+            {
+                name: _package.name,
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const getPackage = async (id: number) => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/packages/' + id,
+        )
+        return response.data
+    } catch (error: any) {
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+
+export const getMedicines = async () => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/medicines',
+        )
+        return response.data
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const deleteMedicine = async (id: number) => {
+    try {
+        await axios.delete(
+            urlRoute + '/medicines/' + id,
+        ).finally()
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+
+export const getEmployees = async () => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/employees',
+        )
+        return response.data
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const deleteEmployee = async (id: number) => {
+    try {
+        await axios.delete(
+            urlRoute + '/employees/' + id,
+        ).finally()
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+
+export const getBuyers = async () => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/buyers',
+        )
+        return response.data
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const deleteBuyer = async (id: number) => {
+    try {
+        await axios.delete(
+            urlRoute + '/buyers/' + id,
+        ).finally()
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+
+

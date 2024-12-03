@@ -1,12 +1,23 @@
 import {Navigate, RouteObject} from "react-router-dom";
 import {MainLayout} from "../layouts/MainLayout/ui/MainLayout.tsx";
 import {
-    BankPage,
-    ChangePasswordPage, CountryPage, CreateBankPage, CreateCountryPage, CreatePostPage, CreateStreetPage,
-    CustomRequestPage, EditBankPage, EditCountryPage, EditPostPage,
-    EditStreetPage,
+    BankPage, BuyerPage, CategoryPage,
+    ChangePasswordPage,
+    CountryPage,
+    CreateBankPage, CreateCategoryPage,
+    CreateCountryPage,
+    CreatePackagePage,
+    CreatePostPage,
+    CreateStreetPage,
+    CustomRequestPage,
+    EditBankPage, EditCategoryPage,
+    EditCountryPage, EditPackagePage,
+    EditPostPage,
+    EditStreetPage, EmployeePage,
     ErrorPage,
-    HomePage, PostPage,
+    HomePage, MedicinePage,
+    PackagePage,
+    PostPage,
     SignInPage,
     StreetPage
 } from "./lazyPages.tsx";
@@ -79,6 +90,42 @@ export const router : RouteObject[] =[
             {
                 path: 'countries/edit/:id',
                 element: <PrivateRoute><EditCountryPage/></PrivateRoute>
+            },
+            {
+                path: 'packages/',
+                element: <PrivateRoute><PackagePage/></PrivateRoute>
+            },
+            {
+                path: 'packages/create',
+                element: <PrivateRoute><CreatePackagePage/></PrivateRoute>
+            },
+            {
+                path: 'packages/edit/:id',
+                element: <PrivateRoute><EditPackagePage/></PrivateRoute>
+            },
+            {
+                path: 'categories/',
+                element: <PrivateRoute><CategoryPage/></PrivateRoute>
+            },
+            {
+                path: 'categories/create',
+                element: <PrivateRoute><CreateCategoryPage/></PrivateRoute>
+            },
+            {
+                path: 'categories/edit/:id',
+                element: <PrivateRoute><EditCategoryPage/></PrivateRoute>
+            },
+            {
+                path: 'medicines/',
+                element: <PrivateRoute><MedicinePage/></PrivateRoute>
+            },
+            {
+                path: 'employees/',
+                element: <PrivateRoute><EmployeePage/></PrivateRoute>
+            },
+            {
+                path: 'buyers/',
+                element: <PrivateRoute><BuyerPage/></PrivateRoute>
             },
             {
                 path: "*",
