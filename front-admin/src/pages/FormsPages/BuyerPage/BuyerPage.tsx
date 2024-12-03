@@ -5,14 +5,19 @@ import {Button, Card, ConfigProvider, Space, Table} from "antd";
 import Column from "antd/es/table/Column";
 import "./BuyerPage.scss"
 
-export type BuyerPage = {
-
+export type Buyer = {
+    id?: number;
+    name: string;
+    bank_id: number;
+    street_id: number;
+    phone_number: string;
+    tin: string;
 }
 
 
 
 export const BuyerPage: FC = () => {
-    const [dataSource, setDataSource] = useState<BuyerPage[]>([]);
+    const [dataSource, setDataSource] = useState<Buyer[]>([]);
     const navigate = useNavigate();
 
     const getBuyersForTable = useCallback(async () => {

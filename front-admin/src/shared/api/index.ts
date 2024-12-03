@@ -7,6 +7,8 @@ import {Bank} from "../../pages/FormsPages/BankPage/BankPage.tsx";
 import {Country} from "../../pages/FormsPages/CountryPage/CountryPage.tsx";
 import {Package} from "../../pages/FormsPages/PackagePage/PackagePage.tsx";
 import {Category} from "../../pages/FormsPages/CategoryPage/CategoryPage.tsx";
+import {Employee} from "../../pages/FormsPages/EmployeePage/EmployeePage.tsx";
+import {Buyer} from "../../pages/FormsPages/BuyerPage/BuyerPage.tsx";
 
 
 export const getConfig = async () => {
@@ -345,6 +347,7 @@ export const getCountries = async () => {
     }
 }
 
+
 export const deleteCountry = async (id: number) => {
     try {
         await axios.delete(
@@ -359,6 +362,7 @@ export const deleteCountry = async (id: number) => {
         };
     }
 }
+
 
 export const createCountry = async (name: string) => {
     try {
@@ -378,6 +382,7 @@ export const createCountry = async (name: string) => {
     }
 }
 
+
 export const updateCountry = async (country: Country) => {
     try {
         await axios.put(
@@ -395,6 +400,7 @@ export const updateCountry = async (country: Country) => {
         };
     }
 }
+
 
 export const getCountry = async (id: number) => {
     try {
@@ -592,7 +598,7 @@ export const deleteMedicine = async (id: number) => {
     try {
         await axios.delete(
             urlRoute + '/medicines/' + id,
-        ).finally()
+        )
         return true;
     } catch (error: any) {
         console.log(error.response.data.error);
@@ -623,7 +629,7 @@ export const deleteEmployee = async (id: number) => {
     try {
         await axios.delete(
             urlRoute + '/employees/' + id,
-        ).finally()
+        )
         return true;
     } catch (error: any) {
         console.log(error.response.data.error);
@@ -633,6 +639,61 @@ export const deleteEmployee = async (id: number) => {
         };
     }
 }
+
+export const createEmployee = async (employee: Employee) => {
+    try {
+        console.log(employee);
+        await axios.post(
+            urlRoute + '/employees/create',
+            {
+                surname: employee.surname,
+                post_id: employee.post_id,
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const getEmployee = async (id: number) => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/employees/' + id,
+        )
+        return response.data
+    } catch (error: any) {
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+
+export const updateEmployee = async (employee: Employee) => {
+    try {
+        await axios.put(
+            urlRoute + '/employees/' + employee.id,
+            {
+                surname: employee.surname,
+                post_id: employee.post_id,
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
 
 
 export const getBuyers = async () => {
@@ -655,6 +716,64 @@ export const deleteBuyer = async (id: number) => {
         await axios.delete(
             urlRoute + '/buyers/' + id,
         ).finally()
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const createBuyer = async (buyer: Buyer) => {
+    try {
+        await axios.post(
+            urlRoute + '/buyers/create',
+            {
+                name: buyer.name,
+                bank_id: buyer.bank_id,
+                street_id: buyer.street_id,
+                phone_number: buyer.phone_number,
+                tin: buyer.tin,
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const getBuyer = async (id: number) => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/buyers/' + id,
+        )
+        return response.data
+    } catch (error: any) {
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const updateBuyer = async (buyer: Buyer) => {
+    try {
+        await axios.put(
+            urlRoute + '/buyers/' + buyer.id,
+            {
+                name: buyer.name,
+                bank_id: buyer.bank_id,
+                street_id: buyer.street_id,
+                phone_number: buyer.phone_number,
+                tin: buyer.tin,
+            }
+        )
         return true;
     } catch (error: any) {
         console.log(error.response.data.error);

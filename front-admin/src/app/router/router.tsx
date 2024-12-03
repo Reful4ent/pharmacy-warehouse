@@ -4,14 +4,14 @@ import {
     BankPage, BuyerPage, CategoryPage,
     ChangePasswordPage,
     CountryPage,
-    CreateBankPage, CreateCategoryPage,
-    CreateCountryPage,
+    CreateBankPage, CreateBuyerPage, CreateCategoryPage,
+    CreateCountryPage, CreateEmployeePage,
     CreatePackagePage,
     CreatePostPage,
     CreateStreetPage,
     CustomRequestPage,
-    EditBankPage, EditCategoryPage,
-    EditCountryPage, EditPackagePage,
+    EditBankPage, EditBuyerPage, EditCategoryPage,
+    EditCountryPage, EditEmployeePage, EditPackagePage,
     EditPostPage,
     EditStreetPage, EmployeePage,
     ErrorPage,
@@ -19,7 +19,7 @@ import {
     PackagePage,
     PostPage, ProducerPage,
     SignInPage, StatementPage,
-    StreetPage, SupplierPage
+    StreetPage, SupplierPage, ViewBuyerPage, ViewEmployeePage
 } from "./lazyPages.tsx";
 import {PrivateRoute} from "../../features/PrivateRoute/PrivateRoute.tsx";
 import {SignLayout} from "../layouts/SignLayout/ui/SignLayout.tsx";
@@ -124,8 +124,32 @@ export const router : RouteObject[] =[
                 element: <PrivateRoute><EmployeePage/></PrivateRoute>
             },
             {
+                path: 'employees/create',
+                element: <PrivateRoute><CreateEmployeePage/></PrivateRoute>
+            },
+            {
+                path: 'employees/edit/:id',
+                element: <PrivateRoute><EditEmployeePage/></PrivateRoute>
+            },
+            {
+                path: 'employees/view/:id',
+                element: <PrivateRoute><ViewEmployeePage/></PrivateRoute>
+            },
+            {
                 path: 'buyers/',
                 element: <PrivateRoute><BuyerPage/></PrivateRoute>
+            },
+            {
+                path: 'buyers/create',
+                element: <PrivateRoute><CreateBuyerPage/></PrivateRoute>
+            },
+            {
+                path: 'buyers/edit/:id',
+                element: <PrivateRoute><EditBuyerPage/></PrivateRoute>
+            },
+            {
+                path: 'buyers/view/:id',
+                element: <PrivateRoute><ViewBuyerPage/></PrivateRoute>
             },
             {
                 path: 'producers/',

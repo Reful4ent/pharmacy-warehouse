@@ -1,4 +1,4 @@
-import {FC } from "react";
+import {FC, useEffect} from "react";
 import {useConfig} from "../../../app/context/ConfigProvider/context.ts";
 import "./Header.scss"
 import {buildMenuTree, DropdownMenuItem} from "../../../features/MenuItem/ui/MenuItem.tsx";

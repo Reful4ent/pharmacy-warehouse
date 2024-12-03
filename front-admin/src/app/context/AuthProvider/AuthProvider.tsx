@@ -50,8 +50,8 @@ export const AuthProvider:FC<PropsWithChildren> = ({children}) => {
 
 
     const signOut =  () => {
-        setUser(null);
         setIsAuthenticated(false)
+        setUser(null);
         localStorage.removeItem("user");
         navigate('/auth/login');
         return true;

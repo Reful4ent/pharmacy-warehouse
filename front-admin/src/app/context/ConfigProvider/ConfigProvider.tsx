@@ -9,10 +9,10 @@ export const ConfigProvider: FC<PropsWithChildren> = ({ children }) => {
     const auth = useAuth()
     const [config, setConfig] = useState<IContext | null>(null)
 
-    const getConfigFrom = useCallback(async () => {
+    const getConfigFrom = useCallback(async (id) => {
         const config_request = await getConfig();
         if(auth?.user) {
-            const permissions = await getUserPermissions(auth.user.id)
+            const permissions = await getUserPermissions(id)
             let finallyConfig:HeaderMenuItem[] =[];
             if(config_request?.header && permissions) {
                 for (let i = 0; i < config_request?.header.length; i++) {
@@ -29,8 +29,8 @@ export const ConfigProvider: FC<PropsWithChildren> = ({ children }) => {
 
 
     useEffect(() => {
-        getConfigFrom()
-    }, [getConfigFrom, auth?.isAuthenticated]);
+        getConfigFrom(auth?.user?.id)
+    }, [auth?.isAuthenticated]);
 
 
     const value: IConfigContextValue = {

@@ -6,7 +6,9 @@ import Column from "antd/es/table/Column";
 import "./EmployeePage.scss"
 
 export type Employee = {
-
+    id?: number;
+    surname: string;
+    post_id: number;
 }
 
 
