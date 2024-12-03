@@ -1,6 +1,10 @@
 import axios from "axios";
 import {urlRoute} from "./route.ts";
 import {Permission} from "./types.ts";
+import {Street} from "../../pages/StreetPage/StreetPage.tsx";
+import {Post} from "../../pages/PostPage/PostPage.tsx";
+import {Bank} from "../../pages/BankPage/BankPage.tsx";
+import {Country} from "../../pages/CountryPage/CountryPage.tsx";
 
 
 export const getConfig = async () => {
@@ -91,15 +95,312 @@ export const getStreets = async () => {
     }
 }
 
+export const getStreet = async (id: number) => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/streets/' + id,
+        )
+        return response.data
+    } catch (error: any) {
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
 export const deleteStreet = async (id: number) => {
     try {
-        console.log(id)
         await axios.delete(
             urlRoute + '/streets/' + id,
         ).finally()
         return true;
     } catch (error: any) {
         console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const createStreet = async (name: string) => {
+    try {
+        await axios.post(
+            urlRoute + '/streets/create',
+            {
+                name: name
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+
+
+
+export const updateStreet = async (street: Street) => {
+    try {
+        await axios.put(
+            urlRoute + '/streets/' + street.id,
+            {
+                name: street.name,
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+
+export const getPosts = async () => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/posts',
+        )
+        return response.data
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const deletePost = async (id: number) => {
+    try {
+        await axios.delete(
+            urlRoute + '/posts/' + id,
+        ).finally()
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const createPost = async (name: string) => {
+    try {
+        await axios.post(
+            urlRoute + '/posts/create',
+            {
+                name: name
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const updatePost = async (post: Post) => {
+    try {
+        await axios.put(
+            urlRoute + '/posts/' + post.id,
+            {
+                name: post.name,
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const getPost = async (id: number) => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/posts/' + id,
+        )
+        return response.data
+    } catch (error: any) {
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+
+
+export const getBanks = async () => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/banks',
+        )
+        return response.data
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const deleteBank = async (id: number) => {
+    try {
+        await axios.delete(
+            urlRoute + '/banks/' + id,
+        ).finally()
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const createBank = async (name: string) => {
+    try {
+        await axios.post(
+            urlRoute + '/banks/create',
+            {
+                name: name
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const updateBank = async (bank: Bank) => {
+    try {
+        await axios.put(
+            urlRoute + '/banks/' + bank.id,
+            {
+                name: bank.name,
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const getBank = async (id: number) => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/banks/' + id,
+        )
+        return response.data
+    } catch (error: any) {
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+
+
+export const getCountries = async () => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/countries',
+        )
+        return response.data
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const deleteCountry = async (id: number) => {
+    try {
+        await axios.delete(
+            urlRoute + '/countries/' + id,
+        ).finally()
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const createCountry = async (name: string) => {
+    try {
+        await axios.post(
+            urlRoute + '/countries/create',
+            {
+                name: name
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const updateCountry = async (country: Country) => {
+    try {
+        await axios.put(
+            urlRoute + '/countries/' + country.id,
+            {
+                name: country.name,
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const getCountry = async (id: number) => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/countries/' + id,
+        )
+        return response.data
+    } catch (error: any) {
         return {
             dataSource:[],
             error: error.response.data.error

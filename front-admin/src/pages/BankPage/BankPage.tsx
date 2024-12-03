@@ -1,36 +1,36 @@
 import {FC, useCallback, useEffect, useState} from "react";
 import {Button, Card, ConfigProvider, Space, Table} from "antd";
-import {deleteStreet, getStreets} from "../../shared/api";
+import {deleteBank, getBanks} from "../../shared/api";
 import Column from "antd/es/table/Column";
 import {useNavigate} from "react-router-dom";
-import './StreetPage.scss'
+import './BankPage.scss'
 
-export type Street = {
+export type Bank = {
     id: number,
     name: string,
 }
 
-export const StreetPage: FC = () => {
-    const [dataSource, setDataSource] = useState<Street[]>([]);
+export const BankPage: FC = () => {
+    const [dataSource, setDataSource] = useState<Bank[]>([]);
     const navigate = useNavigate();
 
-    const getStreetsForTable = useCallback(async () => {
-        const streets = await getStreets();
-        setDataSource(streets)
+    const getBanksForTable = useCallback(async () => {
+        const banks = await getBanks();
+        setDataSource(banks)
     },[])
 
     const handleDelete = useCallback(async (id: number) => {
-        await deleteStreet(id)
-        await getStreetsForTable();
+        await deleteBank(id)
+        await getBanksForTable();
     },[])
 
     useEffect(() => {
-        getStreetsForTable()
+        getBanksForTable()
     }, [dataSource]);
 
     return (
         <>
-            <div className="street-page">
+            <div className="bank-page">
                 <ConfigProvider theme={{
                     components:{
                         Button: {
@@ -40,7 +40,7 @@ export const StreetPage: FC = () => {
                         },
                     },
                 }}>
-                    <Card title="Улицы" className="card-container" extra={<Button type="primary" onClick={() => navigate(`create`)} className="table-create-button">Добавить запись</Button>}>
+                    <Card title="Банки" className="card-container" extra={<Button type="primary" onClick={() => navigate(`create`)} className="table-create-button">Добавить запись</Button>}>
                         <Table dataSource={dataSource} bordered>
                             <Column title="ID" dataIndex="id" key="id"/>
                             <Column title="Название" dataIndex="name" key='name'/>

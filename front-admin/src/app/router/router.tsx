@@ -1,11 +1,12 @@
 import {Navigate, RouteObject} from "react-router-dom";
 import {MainLayout} from "../layouts/MainLayout/ui/MainLayout.tsx";
 import {
-    ChangePasswordPage, CreateStreetPage,
-    CustomRequestPage,
+    BankPage,
+    ChangePasswordPage, CountryPage, CreateBankPage, CreateCountryPage, CreatePostPage, CreateStreetPage,
+    CustomRequestPage, EditBankPage, EditCountryPage, EditPostPage,
     EditStreetPage,
     ErrorPage,
-    HomePage,
+    HomePage, PostPage,
     SignInPage,
     StreetPage
 } from "./lazyPages.tsx";
@@ -42,6 +43,42 @@ export const router : RouteObject[] =[
             {
                 path: 'streets/edit/:id',
                 element: <PrivateRoute><EditStreetPage/></PrivateRoute>
+            },
+            {
+                path: 'posts/',
+                element: <PrivateRoute><PostPage/></PrivateRoute>
+            },
+            {
+                path: 'posts/create',
+                element: <PrivateRoute><CreatePostPage/></PrivateRoute>
+            },
+            {
+                path: 'posts/edit/:id',
+                element: <PrivateRoute><EditPostPage/></PrivateRoute>
+            },
+            {
+                path: 'banks/',
+                element: <PrivateRoute><BankPage/></PrivateRoute>
+            },
+            {
+                path: 'banks/create',
+                element: <PrivateRoute><CreateBankPage/></PrivateRoute>
+            },
+            {
+                path: 'banks/edit/:id',
+                element: <PrivateRoute><EditBankPage/></PrivateRoute>
+            },
+            {
+                path: 'countries/',
+                element: <PrivateRoute><CountryPage/></PrivateRoute>
+            },
+            {
+                path: 'countries/create',
+                element: <PrivateRoute><CreateCountryPage/></PrivateRoute>
+            },
+            {
+                path: 'countries/edit/:id',
+                element: <PrivateRoute><EditCountryPage/></PrivateRoute>
             },
             {
                 path: "*",

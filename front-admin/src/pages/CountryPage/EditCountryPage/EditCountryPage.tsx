@@ -2,12 +2,12 @@ import {FC, useCallback, useEffect, useState} from "react";
 import {Button, Card, ConfigProvider, Form, Input} from "antd";
 import {Arrow} from "../../../shared/components/SVG/Arrow/Arrow.tsx";
 import {useNavigate, useParams} from "react-router-dom";
-import {getStreet, updateStreet} from "../../../shared/api";
-import {Street} from "../StreetPage.tsx";
-import "./EditStreetPage.scss"
+import {getCountry, updateCountry} from "../../../shared/api";
+import {Country} from "../CountryPage.tsx";
+import "./EditCountryPage.scss"
 
 
-export const EditStreetPage: FC = () => {
+export const EditCountryPage: FC = () => {
     const [form] = Form.useForm();
     const navigate = useNavigate();
     const { id } = useParams();
@@ -17,18 +17,18 @@ export const EditStreetPage: FC = () => {
 
     const handleUpdate = useCallback(async () => {
         setIsConfirm(false)
-        const street: Street = {
+        const country: Country = {
             id: Number(id),
             name: form.getFieldValue('name')
         }
-        const result = await updateStreet(street)
+        const result = await updateCountry(country)
         if(result) {
             setIsConfirm(true)
         }
     },[])
 
     const getData = useCallback(async () => {
-        const result = await getStreet(Number(id));
+        const result = await getCountry(Number(id));
         form.setFieldsValue(result)
     },[])
 
@@ -38,7 +38,7 @@ export const EditStreetPage: FC = () => {
 
     return (
         <>
-            <div className="edit-street-page">
+            <div className="edit-country-page">
                 <ConfigProvider theme={{
                     components: {
                         Button: {
@@ -52,17 +52,17 @@ export const EditStreetPage: FC = () => {
                         }
                     },
                 }}>
-                    <Card title="Изменить улицу"
+                    <Card title="Изменить страну"
                           extra={<Button variant="text" onClick={() => navigate(-1)}><Arrow/>Назад</Button>}>
                         <Form form={form} layout="vertical" onFinish={handleUpdate} className="form-container">
-                            <Form.Item name="name" label="Название улицы" rules={[{required: true}]}>
+                            <Form.Item name="name" label="Название страны" rules={[{required: true}]}>
                                 <Input/>
                             </Form.Item>
                             {isConfirm &&
-                                <p className="finished-message">Улица успешно обновлена!</p>
+                                <p className="finished-message">Страна успешно обновлена!</p>
                             }
                             <Form.Item className="submit-create-button">
-                                <Button type="primary" htmlType="submit">Изменить улицу</Button>
+                                <Button type="primary" htmlType="submit">Изменить страну</Button>
                             </Form.Item>
                         </Form>
                     </Card>

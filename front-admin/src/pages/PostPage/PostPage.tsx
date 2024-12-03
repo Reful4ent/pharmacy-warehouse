@@ -1,31 +1,31 @@
 import {FC, useCallback, useEffect, useState} from "react";
 import {Button, Card, ConfigProvider, Space, Table} from "antd";
-import {deleteStreet, getStreets} from "../../shared/api";
+import {deletePost, getPosts} from "../../shared/api";
 import Column from "antd/es/table/Column";
 import {useNavigate} from "react-router-dom";
-import './StreetPage.scss'
+import './PostPage.scss'
 
-export type Street = {
+export type Post = {
     id: number,
     name: string,
 }
 
-export const StreetPage: FC = () => {
-    const [dataSource, setDataSource] = useState<Street[]>([]);
+export const PostPage: FC = () => {
+    const [dataSource, setDataSource] = useState<Post[]>([]);
     const navigate = useNavigate();
 
-    const getStreetsForTable = useCallback(async () => {
-        const streets = await getStreets();
-        setDataSource(streets)
+    const getPostsForTable = useCallback(async () => {
+        const posts = await getPosts();
+        setDataSource(posts)
     },[])
 
     const handleDelete = useCallback(async (id: number) => {
-        await deleteStreet(id)
-        await getStreetsForTable();
+        await deletePost(id)
+        await getPostsForTable();
     },[])
 
     useEffect(() => {
-        getStreetsForTable()
+        getPostsForTable()
     }, [dataSource]);
 
     return (
@@ -40,7 +40,7 @@ export const StreetPage: FC = () => {
                         },
                     },
                 }}>
-                    <Card title="Улицы" className="card-container" extra={<Button type="primary" onClick={() => navigate(`create`)} className="table-create-button">Добавить запись</Button>}>
+                    <Card title="Должности" className="card-container" extra={<Button type="primary" onClick={() => navigate(`create`)} className="table-create-button">Добавить запись</Button>}>
                         <Table dataSource={dataSource} bordered>
                             <Column title="ID" dataIndex="id" key="id"/>
                             <Column title="Название" dataIndex="name" key='name'/>
