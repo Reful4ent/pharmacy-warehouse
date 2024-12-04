@@ -1,6 +1,6 @@
 import {FC, useCallback, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {deleteProducer, getProducers} from "../../../shared/api";
+import {deleteProducer, /*getProducers, */ sendCustomRequest} from "../../../shared/api";
 import {Button, Card, ConfigProvider, Space, Table} from "antd";
 import Column from "antd/es/table/Column";
 import "./ProducerPage.scss"
@@ -16,8 +16,18 @@ export const ProducerPage: FC = () => {
     const navigate = useNavigate();
 
     const getProducersForTable = useCallback(async () => {
-        const employees = await getProducers();
-        setDataSource(employees)
+        //const employees = await getProducers();
+        //setDataSource(employees)
+        const result = await sendCustomRequest(`
+                    SELECT 
+                        producer.id,
+                        producer.name,
+                        country.name AS country_name
+                    FROM 
+                        producer
+                    JOIN 
+                        country ON producer.country_id = country.id`)
+        setDataSource(result?.dataSource)
     },[])
 
     const handleDelete = useCallback(async (id: number) => {
@@ -45,13 +55,12 @@ export const ProducerPage: FC = () => {
                         <Table dataSource={dataSource} bordered>
                             <Column title="ID" dataIndex="id" key="id"/>
                             <Column title="Название" dataIndex="name" key='name'/>
-                            <Column title="ID страны производителя" dataIndex="country_id" key="country_id"/>
+                            <Column title="Страна производителя" dataIndex="country_name" key="country_name"/>
                             <Column
                                 title="Действия"
                                 key="action"
                                 render={(_: any, record) => (
                                     <Space size={"middle"}>
-                                        <Button variant="solid" color="default" onClick={() => navigate(`view/${record.id}`)}>Подробнее</Button>
                                         <Button type="primary"
                                                 onClick={() => navigate(`edit/${record.id}`)}>Редактировать</Button>
                                         <Button variant="solid" color="danger" onClick={() => handleDelete(record.id)}>Удалить</Button>

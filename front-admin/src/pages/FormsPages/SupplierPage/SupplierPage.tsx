@@ -1,6 +1,6 @@
 import {FC, useCallback, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {deleteSupplier, getSuppliers} from "../../../shared/api";
+import {deleteSupplier, /*getSuppliers,*/ sendCustomRequest} from "../../../shared/api";
 import {Button, Card, ConfigProvider, Space, Table} from "antd";
 import Column from "antd/es/table/Column";
 import "./SupplierPage.scss"
@@ -16,8 +16,24 @@ export const SupplierPage: FC = () => {
     const navigate = useNavigate();
 
     const getSuppliersForTable = useCallback(async () => {
-        const suppliers = await getSuppliers();
-        setDataSource(suppliers)
+        //const suppliers = await getSuppliers();
+        //setDataSource(suppliers)
+        const result = await sendCustomRequest(`
+                    SELECT 
+                        supplier.id,
+                        supplier.name,
+                        supplier.phone_number,
+                        supplier.current_account,
+                        supplier.tin,
+                        bank.name AS bank_name,
+                        street.name AS street_name
+                    FROM 
+                        supplier
+                    JOIN 
+                        bank ON supplier.bank_id = bank.id
+                    JOIN
+                        street ON supplier.street_id = street.id`)
+        setDataSource(result?.dataSource)
     },[])
 
     const handleDelete = useCallback(async (id: number) => {
@@ -45,8 +61,8 @@ export const SupplierPage: FC = () => {
                         <Table dataSource={dataSource} bordered>
                             <Column title="ID" dataIndex="id" key="id"/>
                             <Column title="Название" dataIndex="name" key='name'/>
-                            <Column title="ID банка" dataIndex="bank_id" key="bank_id"/>
-                            <Column title="ID улицы" dataIndex="street_id" key="street_id"/>
+                            <Column title="Банк" dataIndex="bank_name" key="bank_name"/>
+                            <Column title="Улицы" dataIndex="street_name" key="street_name"/>
                             <Column title="Номер телефона" dataIndex="phone_number" key="phone_number"/>
                             <Column title="Расчетный счет" dataIndex="current_account" key="current_account"/>
                             <Column title="ИНН" dataIndex="tin" key="tin"/>
@@ -55,7 +71,6 @@ export const SupplierPage: FC = () => {
                                 key="action"
                                 render={(_: any, record) => (
                                     <Space size={"middle"}>
-                                        <Button variant="solid" color="default" onClick={() => navigate(`view/${record.id}`)}>Подробнее</Button>
                                         <Button type="primary"
                                                 onClick={() => navigate(`edit/${record.id}`)}>Редактировать</Button>
                                         <Button variant="solid" color="danger" onClick={() => handleDelete(record.id)}>Удалить</Button>
