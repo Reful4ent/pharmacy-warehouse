@@ -9,6 +9,8 @@ import {Package} from "../../pages/FormsPages/PackagePage/PackagePage.tsx";
 import {Category} from "../../pages/FormsPages/CategoryPage/CategoryPage.tsx";
 import {Employee} from "../../pages/FormsPages/EmployeePage/EmployeePage.tsx";
 import {Buyer} from "../../pages/FormsPages/BuyerPage/BuyerPage.tsx";
+import {Supplier} from "../../pages/FormsPages/SupplierPage/SupplierPage.tsx";
+import {Producer} from "../../pages/FormsPages/ProducerPage/ProducerPage.tsx";
 
 
 export const getConfig = async () => {
@@ -815,7 +817,57 @@ export const deleteProducer = async (id: number) => {
     }
 }
 
+export const updateProducer = async (producer: Producer) => {
+    try {
+        await axios.put(
+            urlRoute + '/producers/' + producer.id,
+            {
+                name: producer.name,
+                country_id: producer.country_id,
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
 
+export const getProducer = async (id: number) => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/producers/' + id,
+        )
+        return response.data
+    } catch (error: any) {
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const createProducer = async (producer: Producer) => {
+    try {
+        await axios.post(
+            urlRoute + '/producers/create',
+            {
+                name: producer.name,
+                country_id: producer.country_id,
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
 
 
 export const getSuppliers = async () => {
@@ -848,6 +900,65 @@ export const deleteSupplier = async (id: number) => {
     }
 }
 
+export const createSupplier = async (supplier: Supplier) => {
+    try {
+        await axios.post(
+            urlRoute + '/suppliers/create',
+            {
+                name: supplier.name,
+                bank_id: supplier.bank_id,
+                street_id: supplier.street_id,
+                phone_number: supplier.phone_number,
+                tin: supplier.tin,
+                current_account: supplier.current_account
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const updateSupplier = async (supplier: Supplier) => {
+    try {
+        await axios.put(
+            urlRoute + '/suppliers/' + supplier.id,
+            {
+                name: supplier.name,
+                bank_id: supplier.bank_id,
+                street_id: supplier.street_id,
+                phone_number: supplier.phone_number,
+                tin: supplier.tin,
+                current_account:supplier.current_account
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const getSupplier = async (id: number) => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/suppliers/' + id,
+        )
+        return response.data
+    } catch (error: any) {
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
 
 
 export const getInvoices = async () => {

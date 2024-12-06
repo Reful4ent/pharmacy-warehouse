@@ -1,6 +1,6 @@
 import {FC, useCallback, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {deleteMedicine, getMedicines, sendCustomRequest} from "../../../shared/api";
+import {deleteMedicine, /*getMedicines, */sendCustomRequest} from "../../../shared/api";
 import {Button, Card, ConfigProvider, Space, Table} from "antd";
 import Column from "antd/es/table/Column";
 import "./MedicinePage.scss"

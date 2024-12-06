@@ -6,7 +6,13 @@ import Column from "antd/es/table/Column";
 import "./SupplierPage.scss"
 
 export type Supplier = {
-
+    id?: number;
+    name: string;
+    bank_id: number;
+    street_id: number;
+    phone_number: string;
+    tin: string;
+    current_account: string;
 }
 
 

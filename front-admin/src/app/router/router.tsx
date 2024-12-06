@@ -1,25 +1,26 @@
 import {Navigate, RouteObject} from "react-router-dom";
 import {MainLayout} from "../layouts/MainLayout/ui/MainLayout.tsx";
 import {
+    AboutPage,
     BankPage, BuyerPage, CategoryPage,
-    ChangePasswordPage,
+    ChangePasswordPage, ContentPage,
     CountryPage,
     CreateBankPage, CreateBuyerPage, CreateCategoryPage,
-    CreateCountryPage, CreateEmployeePage,
+    CreateCountryPage, CreateEmployeePage, CreateInvoicePage, CreateMedicinePage,
     CreatePackagePage,
-    CreatePostPage,
-    CreateStreetPage,
-    CustomRequestPage,
+    CreatePostPage, CreateProducerPage, CreateStatementPage,
+    CreateStreetPage, CreateSupplierPage,
+    CustomRequestPage, DocsPage,
     EditBankPage, EditBuyerPage, EditCategoryPage,
-    EditCountryPage, EditEmployeePage, EditPackagePage,
-    EditPostPage,
-    EditStreetPage, EmployeePage,
+    EditCountryPage, EditEmployeePage, EditInvoicePage, EditMedicinePage, EditPackagePage,
+    EditPostPage, EditProducerPage, EditStatementPage,
+    EditStreetPage, EditSupplierPage, EmployeePage,
     ErrorPage,
     HomePage, InvoicePage, MedicinePage,
     PackagePage,
-    PostPage, ProducerPage,
+    PostPage, ProducerPage, SettingsUserPage,
     SignInPage, StatementPage,
-    StreetPage, SupplierPage, ViewBuyerPage, ViewEmployeePage
+    StreetPage, SupplierPage, ViewInvoicePage, ViewStatementPage,
 } from "./lazyPages.tsx";
 import {PrivateRoute} from "../../features/PrivateRoute/PrivateRoute.tsx";
 import {SignLayout} from "../layouts/SignLayout/ui/SignLayout.tsx";
@@ -120,6 +121,14 @@ export const router : RouteObject[] =[
                 element: <PrivateRoute><MedicinePage/></PrivateRoute>
             },
             {
+                path: 'medicines/create',
+                element: <PrivateRoute><CreateMedicinePage/></PrivateRoute>
+            },
+            {
+                path: 'medicines/edit/:id',
+                element: <PrivateRoute><EditMedicinePage/></PrivateRoute>
+            },
+            {
                 path: 'employees/',
                 element: <PrivateRoute><EmployeePage/></PrivateRoute>
             },
@@ -130,10 +139,6 @@ export const router : RouteObject[] =[
             {
                 path: 'employees/edit/:id',
                 element: <PrivateRoute><EditEmployeePage/></PrivateRoute>
-            },
-            {
-                path: 'employees/view/:id',
-                element: <PrivateRoute><ViewEmployeePage/></PrivateRoute>
             },
             {
                 path: 'buyers/',
@@ -148,24 +153,76 @@ export const router : RouteObject[] =[
                 element: <PrivateRoute><EditBuyerPage/></PrivateRoute>
             },
             {
-                path: 'buyers/view/:id',
-                element: <PrivateRoute><ViewBuyerPage/></PrivateRoute>
-            },
-            {
                 path: 'producers/',
                 element: <PrivateRoute><ProducerPage/></PrivateRoute>
+            },
+            {
+                path: 'producers/create',
+                element: <PrivateRoute><CreateProducerPage/></PrivateRoute>
+            },
+            {
+                path: 'producers/edit/:id',
+                element: <PrivateRoute><EditProducerPage/></PrivateRoute>
             },
             {
                 path: 'suppliers/',
                 element: <PrivateRoute><SupplierPage/></PrivateRoute>
             },
             {
+                path: 'suppliers/create',
+                element: <PrivateRoute><CreateSupplierPage/></PrivateRoute>
+            },
+            {
+                path: 'suppliers/edit/:id',
+                element: <PrivateRoute><EditSupplierPage/></PrivateRoute>
+            },
+            {
                 path: 'invoices/',
                 element: <PrivateRoute><InvoicePage/></PrivateRoute>
             },
             {
+                path: 'invoices/create',
+                element: <PrivateRoute><CreateInvoicePage/></PrivateRoute>
+            },
+            {
+                path: 'invoices/edit/:id',
+                element: <PrivateRoute><EditInvoicePage/></PrivateRoute>
+            },
+            {
+                path: 'invoices/view/:id',
+                element: <PrivateRoute><ViewInvoicePage/></PrivateRoute>
+            },
+            {
                 path: 'statements/',
                 element: <PrivateRoute><StatementPage/></PrivateRoute>
+            },
+            {
+                path: 'statements/create',
+                element: <PrivateRoute><CreateStatementPage/></PrivateRoute>
+            },
+            {
+                path: 'statements/edit/:id',
+                element: <PrivateRoute><EditStatementPage/></PrivateRoute>
+            },
+            {
+                path: 'statements/view/:id',
+                element: <PrivateRoute><ViewStatementPage/></PrivateRoute>
+            },
+            {
+                path: 'about/',
+                element: <PrivateRoute><AboutPage/></PrivateRoute>
+            },
+            {
+                path: 'settings/',
+                element: <PrivateRoute><SettingsUserPage/></PrivateRoute>
+            },
+            {
+                path: 'content/',
+                element: <PrivateRoute><ContentPage/></PrivateRoute>
+            },
+            {
+                path: 'docs/',
+                element: <PrivateRoute><DocsPage /></PrivateRoute>
             },
             {
                 path: "*",

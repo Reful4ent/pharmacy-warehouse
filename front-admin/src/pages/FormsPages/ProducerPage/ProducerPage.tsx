@@ -6,7 +6,9 @@ import Column from "antd/es/table/Column";
 import "./ProducerPage.scss"
 
 export type Producer = {
-
+    id: number;
+    name: string;
+    country_id: number;
 }
 
 

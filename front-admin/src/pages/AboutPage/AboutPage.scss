@@ -1,0 +1,52 @@
+#root {
+  width: 100%;
+  min-height: 100%;
+  position: relative;
+}
+
+.about-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  .about-container {
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+
+    .about-main-text {
+      color: #04aa6d;
+      font: {
+        family: Urbanist;
+        weight: 600;
+      }
+    }
+
+    .p-text-head {
+      margin: 0;
+      font: {
+        family: Urbanist;
+        weight: 600;
+        size: 22px;
+      }
+    }
+
+    .p-text {
+      margin-left: 20px;
+      font: {
+        family: Urbanist;
+        size: 20px;
+      }
+
+      .red-span {
+        color: red;
+        font: {
+          weight: 600;
+        }
+      }
+    }
+  }
+}
