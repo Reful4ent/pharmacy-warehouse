@@ -83,7 +83,7 @@ export const MedicinePage: FC = () => {
                             <Column title="Регистрационный номер" dataIndex="registration_num" key="registration_num"/>
                             <Column title="Производитель" dataIndex="producer_name" key="producer_name"/>
                             <Column title="Упаковка" dataIndex="package_name" key="package_name"/>
-                            <Column title="Категория" dataIndex="category_names" key="category_names"/>
+                            <Column title="Категории" dataIndex="category_names" key="category_names"/>
                             <Column title="Страна производитель" dataIndex="country_name" key="country_name"/>
                             <Column title="Цена" dataIndex="price" key="price"/>
                             <Column
