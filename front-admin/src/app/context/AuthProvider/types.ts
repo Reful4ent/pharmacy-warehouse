@@ -1,8 +1,11 @@
+
+
 export type User = {
     id: number;
     login: string;
     password: string | null;
 }
+
 export interface IAuthProvider {
     user: User | null;
     isAuthenticated: boolean;

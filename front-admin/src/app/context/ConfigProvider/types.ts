@@ -1,3 +1,4 @@
+import {Permission} from "../../../shared/api/types.ts";
 
 export type HeaderMenuItem = {
     id: number;
@@ -15,4 +16,5 @@ export interface IContext {
 
 export interface IConfigContextValue {
     config: IContext | null;
+    permissions: Permission[] | null;
 }

@@ -34,7 +34,7 @@ export const DropdownMenuItem: FC<MenuItemProps> = ({ item }) => {
                     <div className="dropdown-item"
                          onMouseEnter={toggleDropdown}
                          onMouseLeave={toggleDropdown}>
-                        <a className="dropdown-item__link submenu" >
+                        <a className="dropdown-item__link submenu">
                             {item.name}
                             <CaretDown />
                         </a>
@@ -49,9 +49,15 @@ export const DropdownMenuItem: FC<MenuItemProps> = ({ item }) => {
 
                 )
                 :
-                (<a className="dropdown-item__link" href={urlPage + item.function}>
-                    {item.name}
-                </a>)
+                (item.function ?
+                        <a className="dropdown-item__link" href={urlPage + item.function}>
+                            {item.name}
+                        </a>
+                        :
+                        <a className="dropdown-item__link" href="#">
+                            {item.name}
+                        </a>
+                )
             }
         </>
     );

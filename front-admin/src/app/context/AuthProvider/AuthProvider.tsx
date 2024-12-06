@@ -11,8 +11,8 @@ import {urlRoute} from "../../../shared/api/route.ts";
 export const AuthProvider:FC<PropsWithChildren> = ({children}) => {
     const navigate = useNavigate();
     const [isAuthenticated,setIsAuthenticated] = useState<boolean>(false)
-    // @ts-ignore
     const [user, setUser] = useState<User | null>(JSON.parse(localStorage.getItem("user")) || null);
+
 
 
     const signIn = async (data: any) => {
@@ -36,7 +36,7 @@ export const AuthProvider:FC<PropsWithChildren> = ({children}) => {
                 }
                 setUser(tempUser);
                 setIsAuthenticated(true)
-                localStorage.setItem("user", JSON.stringify({id: tempUser.id, login: data.login, password: data.password}));
+                localStorage.setItem("user", JSON.stringify(tempUser));
                 return true
             }
             localStorage.removeItem("user");
@@ -57,7 +57,7 @@ export const AuthProvider:FC<PropsWithChildren> = ({children}) => {
         return true;
     }
 
-    //TODO: сделать запрос на обновление данных пользователя
+
     const updateUser = async (data: any) => {
         try {
             const response = await axios.put(

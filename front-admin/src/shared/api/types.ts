@@ -6,4 +6,5 @@ export type Permission = {
     write_permission: boolean;
     edit_permission: boolean;
     delete_permission: boolean;
+    function: string;
 }

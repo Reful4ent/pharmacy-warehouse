@@ -3,13 +3,15 @@ import {HeaderMenuItem, IConfigContextValue, IContext} from "./types.ts";
 import {getConfig, getUserPermissions} from "../../../shared/api";
 import {ConfigContext} from "./context.ts";
 import {useAuth} from "../AuthProvider/context.ts";
+import {Permission} from "../../../shared/api/types.ts";
 
 
 export const ConfigProvider: FC<PropsWithChildren> = ({ children }) => {
     const auth = useAuth()
     const [config, setConfig] = useState<IContext | null>(null)
+    const [permissions, setPermissions] = useState<Permission[] | null>(null)
 
-    const getConfigFrom = useCallback(async (id) => {
+    const getConfigFrom = useCallback(async (id: any) => {
         const config_request = await getConfig();
         if(auth?.user) {
             const permissions = await getUserPermissions(id)
@@ -23,6 +25,7 @@ export const ConfigProvider: FC<PropsWithChildren> = ({ children }) => {
                 setConfig({
                     headerContext: finallyConfig
                 })
+                setPermissions(permissions)
             }
         }
     },[])
@@ -35,6 +38,7 @@ export const ConfigProvider: FC<PropsWithChildren> = ({ children }) => {
 
     const value: IConfigContextValue = {
         config,
+        permissions,
     }
 
     return (
