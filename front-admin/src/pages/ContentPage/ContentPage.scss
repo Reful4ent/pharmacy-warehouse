@@ -1,0 +1,44 @@
+.content-page {
+  display: flex;
+  flex-direction: column;
+  padding-left: 10px;
+
+  .ul-tree{
+    margin: 0;
+  }
+
+  .red-p {
+    color: red;
+    font: {
+      weight: 600;
+      size: 18px;
+    }
+  }
+
+  .content-head {
+    color: #04aa6d;
+    font: {
+      size: 22px;
+      weight: 600;
+    }
+  }
+
+  .li-element{
+    padding: {
+      bottom: 5px;
+      top: 5px;
+    }
+  }
+
+  .li-button {
+    font-size: 20px;
+    margin: {
+      bottom: 10px;
+      top: 10px;
+    }
+  }
+
+  .li-text {
+    font-size: 18px;
+  }
+}
