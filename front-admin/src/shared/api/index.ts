@@ -11,6 +11,7 @@ import {Employee} from "../../pages/FormsPages/EmployeePage/EmployeePage.tsx";
 import {Buyer} from "../../pages/FormsPages/BuyerPage/BuyerPage.tsx";
 import {Supplier} from "../../pages/FormsPages/SupplierPage/SupplierPage.tsx";
 import {Producer} from "../../pages/FormsPages/ProducerPage/ProducerPage.tsx";
+import {User} from "../../app/context/AuthProvider/types.ts";
 
 
 export const getConfig = async () => {
@@ -28,6 +29,64 @@ export const getConfig = async () => {
     }
 }
 
+export const getUsers = async (user?: User) => {
+    try {
+        let response
+        if (user) {
+            response = await axios.post(
+                urlRoute + '/users',
+                {
+                    id: user.id,
+                }
+            )
+        }
+        else {
+            response = await axios.post(
+                urlRoute + '/users',
+            )
+        }
+        return response.data
+    } catch (error: any) {
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const deleteUsers = async (id: number) => {
+    try {
+        await axios.delete(
+            urlRoute + '/users/' + id,
+        ).finally()
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const createUser = async (user: User) => {
+    try {
+        await axios.post(
+            urlRoute + '/users/register',
+            {
+                login: user.login,
+                password: user.password,
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
 
 
 export const getUserPermissions = async (id: number): Promise<Permission[] | null> => {
@@ -39,6 +98,28 @@ export const getUserPermissions = async (id: number): Promise<Permission[] | nul
             }
         )
 
+        return  response.data
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
+}
+
+export const updateUserPermissions = async (permission: Permission): Promise<Permission[] | null> => {
+    try {
+        console.log(permission)
+        const response = await axios.put(
+            urlRoute + '/permissions',
+            {
+                id: permission.id,
+                user_id: permission.user_id,
+                menu_item_id: permission.menu_item_id,
+                read_permission: permission.read_permission,
+                write_permission: permission.write_permission,
+                edit_permission: permission.edit_permission,
+                delete_permission: permission.delete_permission,
+            }
+        )
         return  response.data
     } catch (error) {
         console.log(error);

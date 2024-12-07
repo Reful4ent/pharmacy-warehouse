@@ -8,19 +8,19 @@ import {
     CreateBankPage, CreateBuyerPage, CreateCategoryPage,
     CreateCountryPage, CreateEmployeePage, CreateInvoicePage, CreateMedicinePage,
     CreatePackagePage,
-    CreatePostPage, CreateProducerPage, CreateStatementPage,
+    CreatePostPage, CreateProducerPage, CreateSettingsUserPage, CreateStatementPage,
     CreateStreetPage, CreateSupplierPage,
     CustomRequestPage, DocsPage,
     EditBankPage, EditBuyerPage, EditCategoryPage,
     EditCountryPage, EditEmployeePage, EditInvoicePage, EditMedicinePage, EditPackagePage,
-    EditPostPage, EditProducerPage, EditStatementPage,
+    EditPostPage, EditProducerPage, EditSettingsUserPage, EditStatementPage,
     EditStreetPage, EditSupplierPage, EmployeePage,
     ErrorPage,
     HomePage, InvoicePage, MedicinePage,
     PackagePage,
     PostPage, ProducerPage, SettingsUserPage,
     SignInPage, StatementPage,
-    StreetPage, SupplierPage, ViewInvoicePage, ViewStatementPage,
+    StreetPage, SupplierPage, ViewInvoicePage, ViewSettingsUserPage, ViewStatementPage,
 } from "./lazyPages.tsx";
 import {PrivateRoute} from "../../features/PrivateRoute/PrivateRoute.tsx";
 import {SignLayout} from "../layouts/SignLayout/ui/SignLayout.tsx";
@@ -215,6 +215,18 @@ export const router : RouteObject[] =[
             {
                 path: 'settings/',
                 element: <PrivateRoute><SettingsUserPage/></PrivateRoute>
+            },
+            {
+                path: 'settings/create',
+                element: <PrivateRoute><CreateSettingsUserPage/></PrivateRoute>
+            },
+            {
+                path: 'settings/edit/:id',
+                element: <PrivateRoute><EditSettingsUserPage/></PrivateRoute>
+            },
+            {
+                path: 'settings/view/:id',
+                element: <PrivateRoute><ViewSettingsUserPage/></PrivateRoute>
             },
             {
                 path: 'content/',

@@ -63,6 +63,9 @@ export const ViewStatementPage = lazy(() => import('../../pages/FormsPages/State
 export const AboutPage = lazy(() => import('../../pages/AboutPage/AboutPage').then(m => ({default: m.AboutPage})))
 
 export const SettingsUserPage = lazy(() => import('../../pages/SettingsUserPage/SettingsUserPage').then(m => ({default: m.SettingsUserPage})))
+export const CreateSettingsUserPage = lazy(() => import('../../pages/SettingsUserPage/CreateSettingsUserPage/CreateSettingsUserPage').then(m => ({default: m.CreateSettingsUserPage})))
+export const EditSettingsUserPage = lazy(() => import('../../pages/SettingsUserPage/EditSettingsUserPage/EditSettingsUserPage').then(m => ({default: m.EditSettingsUserPage})))
+export const ViewSettingsUserPage = lazy(() => import('../../pages/SettingsUserPage/ViewSettingsUserPage/ViewSettingsUserPage').then(m => ({default: m.ViewSettingsUserPage})))
 
 export const ContentPage = lazy(() => import('../../pages/ContentPage/ContentPage').then(m => ({default: m.ContentPage})))
 

@@ -1,0 +1,34 @@
+.finished-message{
+  text-align: center;
+  margin: 0;
+  margin-bottom: 20px;
+  color: #04aa6d;
+  font: {
+    size: 18px;
+    weight: 500;
+  }
+}
+
+.edit-user-page {
+  padding: 25px 75px 10px 75px;
+
+  .form-container {
+    display: flex;
+    flex-direction: column;
+
+    .submit-create-button {
+      align-self: end;
+    }
+
+    .checkbox-container {
+      display: flex;
+      flex-direction: column;
+
+      .checkbox-group-checkboxes {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+  }
+}

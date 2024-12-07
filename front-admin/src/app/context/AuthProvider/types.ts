@@ -2,7 +2,7 @@
 
 export type User = {
     id: number;
-    login: string;
+    login: string | null;
     password: string | null;
 }
 
