@@ -12,6 +12,7 @@ import {Buyer} from "../../pages/FormsPages/BuyerPage/BuyerPage.tsx";
 import {Supplier} from "../../pages/FormsPages/SupplierPage/SupplierPage.tsx";
 import {Producer} from "../../pages/FormsPages/ProducerPage/ProducerPage.tsx";
 import {User} from "../../app/context/AuthProvider/types.ts";
+import {Medicine} from "../../pages/FormsPages/MedicinePage/MedicinePage.tsx";
 
 
 export const getConfig = async () => {
@@ -88,6 +89,27 @@ export const createUser = async (user: User) => {
     }
 }
 
+export const updateUser = async (user: User) => {
+    try {
+        console.log(user)
+        await axios.put(
+            urlRoute + '/users/change-password',
+            {
+                id: user.id,
+                login: user.login,
+                password: user.password,
+            }
+        )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
 
 export const getUserPermissions = async (id: number): Promise<Permission[] | null> => {
     try {
@@ -107,7 +129,6 @@ export const getUserPermissions = async (id: number): Promise<Permission[] | nul
 
 export const updateUserPermissions = async (permission: Permission): Promise<Permission[] | null> => {
     try {
-        console.log(permission)
         const response = await axios.put(
             urlRoute + '/permissions',
             {
@@ -152,7 +173,7 @@ export const sendCustomRequest = async (request: string) => {
                 render: (value: any) => String(value)
             });
         }
-        console.log(response.data);
+
         return {
             dataSource: response.data,
             columns: columns,
@@ -682,6 +703,52 @@ export const deleteMedicine = async (id: number) => {
         await axios.delete(
             urlRoute + '/medicines/' + id,
         )
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export const createMedicine = async (medicine: Medicine) => {
+    try {
+        const result = await axios.post(
+            urlRoute + '/medicines/create',
+            {
+                name: medicine.name,
+                production_date: medicine.production_date,
+                expiration_date: medicine.expiration_date,
+                registration_num: medicine.registration_num,
+                price: medicine.price,
+            }
+        )
+
+        const id = result.data.id;
+
+        try {
+            await sendCustomRequest(`INSERT INTO medicine_package (medicine_id, package_id) VALUES (${id},${medicine.package_name})`);
+        } catch (error) {
+            console.error('Error inserting into medicine_package:', error);
+        }
+
+        try {
+            await sendCustomRequest(`INSERT INTO medicine_producer (medicine_id, producer_id) VALUES (${id},${medicine.producer_name})`);
+        } catch (error) {
+            console.error('Error inserting into medicine_producer:', error);
+        }
+
+
+        for (const category_id of medicine.category_names) {
+            try {
+                await sendCustomRequest(`INSERT INTO medicine_category (medicine_id, category_id) VALUES (${id},${category_id})`);
+            } catch (error) {
+                console.error(`Error inserting into medicine_category for category ${category_id}:`, error);
+            }
+        }
+
         return true;
     } catch (error: any) {
         console.log(error.response.data.error);

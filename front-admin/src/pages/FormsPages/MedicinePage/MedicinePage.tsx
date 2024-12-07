@@ -7,7 +7,15 @@ import "./MedicinePage.scss"
 import {useConfig} from "../../../app/context/ConfigProvider/context.ts";
 
 export type Medicine = {
-
+    id: number,
+    name: string,
+    production_date: string,
+    expiration_date: string,
+    registration_num: string,
+    price: number;
+    category_names: number[];
+    package_name: number;
+    producer_name: number;
 }
 
 
@@ -35,19 +43,19 @@ export const MedicinePage: FC = () => {
                         country.name AS country_name
                     FROM 
                         medicine
-                    JOIN 
+                    LEFT JOIN 
                         medicine_producer ON medicine.id = medicine_producer.medicine_id
-                    JOIN 
+                    LEFT JOIN 
                         producer ON medicine_producer.producer_id = producer.id
-                    JOIN 
+                    LEFT JOIN 
                         medicine_category ON medicine.id = medicine_category.medicine_id
-                    JOIN 
+                    LEFT JOIN 
                         category ON medicine_category.category_id = category.id
-                    JOIN 
+                    LEFT JOIN 
                         medicine_package ON medicine.id = medicine_package.medicine_id
-                    JOIN 
+                    LEFT JOIN 
                         package ON medicine_package.package_id = package.id
-                    JOIN 
+                    LEFT JOIN 
                         country ON producer.country_id = country.id
                     GROUP BY 
                         medicine.id, medicine.name, medicine.production_date, medicine.expiration_date, 
@@ -91,8 +99,8 @@ export const MedicinePage: FC = () => {
                             <Table dataSource={dataSource} bordered>
                                 <Column title="ID" dataIndex="id" key="id"/>
                                 <Column title="Название" dataIndex="name" key='name'/>
-                                <Column title="Дата производства" dataIndex="production_date" key="production_date"/>
-                                <Column title="Срок годности" dataIndex="expiration_date" key="expiration_date"/>
+                                <Column title="Дата производства" dataIndex="production_date" key="production_date" render={date => date.split('T')[0]}/>
+                                <Column title="Срок годности" dataIndex="expiration_date" key="expiration_date" render={date => date.split('T')[0]}/>
                                 <Column title="Регистрационный номер" dataIndex="registration_num"
                                         key="registration_num"/>
                                 <Column title="Производитель" dataIndex="producer_name" key="producer_name"/>

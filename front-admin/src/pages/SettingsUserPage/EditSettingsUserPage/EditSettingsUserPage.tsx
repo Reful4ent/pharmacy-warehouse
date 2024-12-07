@@ -1,18 +1,19 @@
 import {FC, useCallback, useEffect, useState} from "react";
 import {Button, Card, Checkbox, CheckboxProps, ConfigProvider, Form, Input} from "antd";
 import {useNavigate, useParams} from "react-router-dom";
-import {getUserPermissions, getUsers, updateUserPermissions} from "../../../shared/api";
+import {getUserPermissions, getUsers, updateUser, updateUserPermissions} from "../../../shared/api";
 import {Arrow} from "../../../shared/components/SVG/Arrow/Arrow.tsx";
 import "./EditSettingsUserPage.scss"
 import {Permission} from "../../../shared/api/types.ts";
-import {router} from "../../../app/router/router.tsx";
 
 
 export const EditSettingsUserPage: FC = () => {
     const [form] = Form.useForm();
+    const [permissionsForm] = Form.useForm();
     const navigate = useNavigate();
     const {id} = useParams();
     const [isConfirm, setIsConfirm] = useState<boolean>(false);
+    const [isConfirmPermissions, setIsConfirmPermissions] = useState<boolean>(false)
     const [permissions, setPermissions] = useState<Permission[] | null>([])
 
 
@@ -43,16 +44,30 @@ export const EditSettingsUserPage: FC = () => {
         setPermissions(tempPermissions);
     };
 
-    //TODO: доделать смену пароля
     const handleUpdate = useCallback(async () => {
         setIsConfirm(false)
-        if (permissions) {
-            for (const permission of permissions) {
-                await updateUserPermissions(permission)
-            }
-            navigate('/settings')
+        const user = {
+            id: Number(id),
+            login: form.getFieldValue('login'),
+            password: form.getFieldValue('password'),
         }
-    }, [permissions])
+        const result = await updateUser(user);
+        if(result) {
+            setIsConfirm(true)
+        }
+    }, [])
+
+    const handlePermissionsUpdate = useCallback( async () => {
+        if (permissions) {
+            let result;
+            for (const permission of permissions) {
+                result = await updateUserPermissions(permission)
+            }
+            if(result) {
+                setIsConfirmPermissions(true)
+            }
+        }
+    },[permissions])
 
     useEffect(() => {
         getData()
@@ -78,16 +93,25 @@ export const EditSettingsUserPage: FC = () => {
                           extra={<Button variant="text" onClick={() => navigate(-1)}><Arrow/>Назад</Button>}>
                         <Form form={form} layout="vertical" onFinish={handleUpdate} className="form-container">
                             <Form.Item name="login" label="Логин" rules={[{required: true}]}>
-                                <Input/>
+                                <Input disabled/>
                             </Form.Item>
                             <Form.Item name="password" label="Пароль" rules={[{required: true}]}>
                                 <Input.Password/>
                             </Form.Item>
                             {isConfirm &&
-                                <p className="finished-message">Улица успешно обновлена!</p>
+                                <p className="finished-message">Пользователь успешно обновлен!</p>
                             }
+                            <Form.Item className="submit-create-button">
+                                <Button type="primary" htmlType="submit" style={{marginTop: 50}}>Изменить
+                                    пользователя</Button>
+                            </Form.Item>
+                        </Form>
+                    </Card>
+                    <Card title="Изменить права пользователя" style={{marginTop: "100px", marginBottom: "100px"}}
+                          extra={<Button variant="text" onClick={() => navigate(-1)}><Arrow/>Назад</Button>}>
+                        <Form form={permissionsForm} layout="vertical" className="form-container" onFinish={handlePermissionsUpdate}>
                             {permissions?.map((permission) => (
-                                <Form.Item label={permission.name} style={{
+                                <Form.Item label={<h3>{permission.name}</h3>} style={{
                                     margin: "0 auto",
                                     paddingBottom: "10px",
                                     paddingTop: "10px",
@@ -115,9 +139,11 @@ export const EditSettingsUserPage: FC = () => {
                                     </Checkbox>
                                 </Form.Item>
                             ))}
+                            {isConfirmPermissions &&
+                                <p className="finished-message" style={{paddingTop:"50px"}}>Права пользователя успешно обновлены!</p>
+                            }
                             <Form.Item className="submit-create-button">
-                                <Button type="primary" htmlType="submit" style={{marginTop: 50}}>Изменить
-                                    пользователя</Button>
+                                <Button type="primary" htmlType="submit" style={{marginTop: 50}}>Изменить права пользователя</Button>
                             </Form.Item>
                         </Form>
                     </Card>

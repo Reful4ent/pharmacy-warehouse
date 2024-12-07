@@ -6,16 +6,19 @@ import {deleteUsers, getUsers} from "../../shared/api";
 import {Button, Card, ConfigProvider, Space, Table} from "antd";
 import Column from "antd/es/table/Column";
 import {User} from "../../app/context/AuthProvider/types.ts";
+import {useAuth} from "../../app/context/AuthProvider/context.ts";
 
 
 export const SettingsUserPage: FC = () => {
     const [dataSource, setDataSource] = useState<User[]>([]);
     const navigate = useNavigate();
     const config = useConfig()
+    const auth = useAuth()
     const permissions = config?.permissions?.filter((permission) => permission.function == '/settings') ?? [];
 
     const getUsersForTable = useCallback(async () => {
-        const users = await getUsers();
+        let users:User[] = await getUsers();
+        users = users.filter((user) => user.id != auth?.user?.id)
         setDataSource(users)
     },[])
 
