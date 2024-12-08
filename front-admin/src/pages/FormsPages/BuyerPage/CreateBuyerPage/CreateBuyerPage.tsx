@@ -1,5 +1,5 @@
 import {FC, useCallback, useEffect, useState} from "react";
-import {Button, Card, ConfigProvider, Form, Input, Select} from "antd";
+import {Button, Card, ConfigProvider, Form, Input, Modal, Select} from "antd";
 import {Arrow} from "../../../../shared/components/SVG/Arrow/Arrow.tsx";
 import {useNavigate} from "react-router-dom";
 import {createBuyer, getBanks, getStreets} from "../../../../shared/api";
@@ -15,6 +15,7 @@ export const CreateBuyerPage: FC = () => {
     const navigate = useNavigate()
     const [banksOptions, setBanksOptions] = useState()
     const [streetsOptions, setStreetsOptions] = useState()
+    const [isOpen, setIsOpen] = useState<boolean>(false)
 
 
     const handleCreate = useCallback(async () => {
@@ -23,6 +24,10 @@ export const CreateBuyerPage: FC = () => {
         if(result) {
             navigate('/buyers')
         }
+    },[])
+
+    const handleSubmit = useCallback(() => {
+        setIsOpen(true)
     },[])
 
     const getDataForForm = useCallback(async () => {
@@ -60,7 +65,7 @@ export const CreateBuyerPage: FC = () => {
                 }}>
                     <Card title="Создать компанию покупателя"
                           extra={<Button variant="text" onClick={() => navigate(-1)}><Arrow/>Назад</Button>}>
-                        <Form form={form} layout="vertical" onFinish={handleCreate} className="form-container">
+                        <Form form={form} layout="vertical" onFinish={handleSubmit} className="form-container">
                             <Form.Item name="name" label="Название компании покупателя" rules={[{required: true}]}>
                                 <Input/>
                             </Form.Item>
@@ -93,6 +98,13 @@ export const CreateBuyerPage: FC = () => {
                             </Form.Item>
                         </Form>
                     </Card>
+                    <Modal open={isOpen}
+                           onCancel={() => setIsOpen(false)}
+                           title="Вы точно хотите создать?"
+                           cancelText="Назад"
+                           okText="Создать"
+                           onOk={handleCreate}
+                    />
                 </ConfigProvider>
             </div>
         </>

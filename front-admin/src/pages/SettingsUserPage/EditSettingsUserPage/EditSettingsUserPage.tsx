@@ -1,5 +1,5 @@
 import {FC, useCallback, useEffect, useState} from "react";
-import {Button, Card, Checkbox, CheckboxProps, ConfigProvider, Form, Input} from "antd";
+import {Button, Card, Checkbox, CheckboxProps, ConfigProvider, Form, Input, Modal} from "antd";
 import {useNavigate, useParams} from "react-router-dom";
 import {getUserPermissions, getUsers, updateUser, updateUserPermissions} from "../../../shared/api";
 import {Arrow} from "../../../shared/components/SVG/Arrow/Arrow.tsx";
@@ -15,6 +15,8 @@ export const EditSettingsUserPage: FC = () => {
     const [isConfirm, setIsConfirm] = useState<boolean>(false);
     const [isConfirmPermissions, setIsConfirmPermissions] = useState<boolean>(false)
     const [permissions, setPermissions] = useState<Permission[] | null>([])
+    const [isOpen, setIsOpen] = useState<boolean>(false)
+    const [isOpenPremission, setIsOpenPremission] = useState<boolean>(false)
 
 
 
@@ -44,6 +46,10 @@ export const EditSettingsUserPage: FC = () => {
         setPermissions(tempPermissions);
     };
 
+    const handleSubmit = useCallback(() => {
+        setIsOpen(true)
+    },[])
+
     const handleUpdate = useCallback(async () => {
         setIsConfirm(false)
         const user = {
@@ -56,6 +62,10 @@ export const EditSettingsUserPage: FC = () => {
             setIsConfirm(true)
         }
     }, [])
+
+    const handleSubmitPermissions = useCallback(() => {
+        setIsOpenPremission(true)
+    },[])
 
     const handlePermissionsUpdate = useCallback( async () => {
         if (permissions) {
@@ -91,9 +101,9 @@ export const EditSettingsUserPage: FC = () => {
                 }}>
                     <Card title="Изменить пользователя"
                           extra={<Button variant="text" onClick={() => navigate(-1)}><Arrow/>Назад</Button>}>
-                        <Form form={form} layout="vertical" onFinish={handleUpdate} className="form-container">
+                        <Form form={form} layout="vertical" onFinish={handleSubmit} className="form-container">
                             <Form.Item name="login" label="Логин" rules={[{required: true}]}>
-                                <Input disabled/>
+                                <Input readOnly/>
                             </Form.Item>
                             <Form.Item name="password" label="Пароль" rules={[{required: true}]}>
                                 <Input.Password/>
@@ -109,7 +119,7 @@ export const EditSettingsUserPage: FC = () => {
                     </Card>
                     <Card title="Изменить права пользователя" style={{marginTop: "100px", marginBottom: "100px"}}
                           extra={<Button variant="text" onClick={() => navigate(-1)}><Arrow/>Назад</Button>}>
-                        <Form form={permissionsForm} layout="vertical" className="form-container" onFinish={handlePermissionsUpdate}>
+                        <Form form={permissionsForm} layout="vertical" className="form-container" onFinish={handleSubmitPermissions}>
                             {permissions?.map((permission) => (
                                 <Form.Item label={<h3>{permission.name}</h3>} style={{
                                     margin: "0 auto",
@@ -147,6 +157,26 @@ export const EditSettingsUserPage: FC = () => {
                             </Form.Item>
                         </Form>
                     </Card>
+                    <Modal open={isOpen}
+                           onCancel={() => setIsOpen(false)}
+                           title="Вы точно хотите изменить?"
+                           cancelText="Назад"
+                           okText="Изменить"
+                           onOk={() => {
+                               setIsOpen(false)
+                               handleUpdate()
+                           }}
+                    />
+                    <Modal open={isOpenPremission}
+                           onCancel={() => setIsOpenPremission(false)}
+                           title="Вы точно хотите изменить?"
+                           cancelText="Назад"
+                           okText="Изменить"
+                           onOk={() => {
+                               setIsOpenPremission(false)
+                               handlePermissionsUpdate()
+                           }}
+                    />
                 </ConfigProvider>
             </div>
         </>

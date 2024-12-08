@@ -1,6 +1,6 @@
 import {FC, useCallback, useEffect, useState} from "react";
-import {Button, Card, ConfigProvider, Space, Table} from "antd";
-import {deletePost, getPosts} from "../../../shared/api";
+import {Button, Card, ConfigProvider, Modal, Space, Table} from "antd";
+import { deletePost, getPosts} from "../../../shared/api";
 import Column from "antd/es/table/Column";
 import {useNavigate} from "react-router-dom";
 import './PostPage.scss'
@@ -16,15 +16,17 @@ export const PostPage: FC = () => {
     const navigate = useNavigate();
     const config = useConfig()
     const permissions = config?.permissions?.filter((permission) => permission.function == '/posts') ?? [];
+    const [isOpen, setIsOpen] = useState<boolean>(false)
+    const [selectedId, setSelectedId] = useState<number>(0)
 
     const getPostsForTable = useCallback(async () => {
         const posts = await getPosts();
         setDataSource(posts)
     },[])
 
-    const handleDelete = useCallback(async (id: number) => {
-        await deletePost(id)
-        await getPostsForTable();
+    const handleDelete = useCallback( (id: number) => {
+        setSelectedId(id);
+        setIsOpen(true)
     },[])
 
     useEffect(() => {
@@ -77,6 +79,20 @@ export const PostPage: FC = () => {
                                 }
                             </Table>
                         </Card>
+                        <Modal open={isOpen}
+                               onCancel={() => setIsOpen(false)}
+                               title="Вы точно хотите удалить?"
+                               cancelText="Нет"
+                               okText="Удалить"
+                               okType="danger"
+                               onOk={async () => {
+                                   setIsOpen(false);
+                                   await deletePost(selectedId)
+                                   await getPostsForTable();
+                               }}
+                        >
+                            <p>Вы не сможете вернуть удаленные данные!</p>
+                        </Modal>
                     </ConfigProvider>
                     :
                     <p>У ВАС ОТСУТСТВУЕТ ДОСТУП, ОБРАТИТЕТСЬ К АДМИНИСТРАТОРУ, ДЛЯ ПОЛУЧЕНИЯ ДОСТУПА К ЭТОЙ СТРАНИЦЕ</p>

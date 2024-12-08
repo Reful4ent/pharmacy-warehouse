@@ -698,6 +698,27 @@ export const getMedicines = async () => {
     }
 }
 
+export const getMedicine = async (id: number) => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/medicines/' + id,
+        )
+        let medicine = response.data
+        const categories = await sendCustomRequest(`SELECT category_id FROM medicine_category where medicine_id=${id}`);
+        const package_ = await sendCustomRequest(`SELECT package_id FROM medicine_package WHERE medicine_id=${id}`);
+        const producer = await sendCustomRequest(`SELECT producer_id FROM medicine_producer WHERE medicine_id=${id}`);
+        medicine['category_names'] = categories.dataSource.map((element: any) => element.category_id)
+        medicine['package_name'] = package_.dataSource.map((element: any) => element.package_id)
+        medicine['producer_name'] = producer.dataSource.map((element: any) => element.producer_id)
+        return response.data
+    } catch (error: any) {
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
 export const deleteMedicine = async (id: number) => {
     try {
         await axios.delete(
@@ -728,22 +749,94 @@ export const createMedicine = async (medicine: Medicine) => {
 
         const id = result.data.id;
 
-        try {
-            await sendCustomRequest(`INSERT INTO medicine_package (medicine_id, package_id) VALUES (${id},${medicine.package_name})`);
-        } catch (error) {
-            console.error('Error inserting into medicine_package:', error);
+        for (const packages_id of medicine.package_name) {
+            try {
+                await sendCustomRequest(`INSERT INTO medicine_package (medicine_id, package_id) VALUES (${id},${packages_id})`);
+            } catch (error) {
+                console.error('Error inserting into medicine_package:', error);
+            }
         }
 
-        try {
-            await sendCustomRequest(`INSERT INTO medicine_producer (medicine_id, producer_id) VALUES (${id},${medicine.producer_name})`);
-        } catch (error) {
-            console.error('Error inserting into medicine_producer:', error);
+        for(const producers_id of medicine.producer_name) {
+            try {
+                await sendCustomRequest(`INSERT INTO medicine_producer (medicine_id, producer_id) VALUES (${id},${producers_id})`);
+            } catch (error) {
+                console.error('Error inserting into medicine_producer:', error);
+            }
         }
 
 
         for (const category_id of medicine.category_names) {
             try {
                 await sendCustomRequest(`INSERT INTO medicine_category (medicine_id, category_id) VALUES (${id},${category_id})`);
+            } catch (error) {
+                console.error(`Error inserting into medicine_category for category ${category_id}:`, error);
+            }
+        }
+
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+
+export const updateMedicine = async (medicine: Medicine) => {
+    try {
+        await axios.put(
+            urlRoute + '/medicines/' + medicine.id,
+            {
+                name: medicine.name,
+                production_date: medicine.production_date,
+                expiration_date: medicine.expiration_date,
+                registration_num: medicine.registration_num,
+                price: medicine.price,
+            }
+        )
+
+        try{
+            await sendCustomRequest(`DELETE FROM medicine_package WHERE medicine_id=${medicine.id}`);
+        } catch (error) {
+            console.error(error);
+        }
+
+        try{
+            await sendCustomRequest(`DELETE FROM medicine_category WHERE medicine_id=${medicine.id}`);
+        } catch (error) {
+            console.error(error);
+        }
+
+        try{
+            await sendCustomRequest(`DELETE FROM medicine_producer WHERE medicine_id=${medicine.id}`);
+        } catch (error) {
+            console.error(error);
+        }
+
+
+        for (const packages_id of medicine.package_name) {
+            try {
+                await sendCustomRequest(`INSERT INTO medicine_package (medicine_id, package_id) VALUES (${medicine.id},${packages_id})`);
+            } catch (error) {
+                console.error('Error inserting into medicine_package:', error);
+            }
+        }
+
+        for(const producers_id of medicine.producer_name) {
+            try {
+                await sendCustomRequest(`INSERT INTO medicine_producer (medicine_id, producer_id) VALUES (${medicine.id},${producers_id})`);
+            } catch (error) {
+                console.error('Error inserting into medicine_producer:', error);
+            }
+        }
+
+
+        for (const category_id of medicine.category_names) {
+            try {
+                await sendCustomRequest(`INSERT INTO medicine_category (medicine_id, category_id) VALUES (${medicine.id},${category_id})`);
             } catch (error) {
                 console.error(`Error inserting into medicine_category for category ${category_id}:`, error);
             }

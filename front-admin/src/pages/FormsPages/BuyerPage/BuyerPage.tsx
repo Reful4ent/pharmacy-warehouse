@@ -1,7 +1,7 @@
 import {FC, useCallback, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {deleteBuyer, /*getBuyers,*/ sendCustomRequest} from "../../../shared/api";
-import {Button, Card, ConfigProvider, Space, Table} from "antd";
+import {Button, Card, ConfigProvider, Modal, Space, Table} from "antd";
 import Column from "antd/es/table/Column";
 import "./BuyerPage.scss"
 import {useConfig} from "../../../app/context/ConfigProvider/context.ts";
@@ -22,6 +22,8 @@ export const BuyerPage: FC = () => {
     const [dataSource, setDataSource] = useState<Buyer[]>([]);
     const navigate = useNavigate();
     const permissions = config?.permissions?.filter((permission) => permission.function == '/buyers') ?? [];
+    const [isOpen, setIsOpen] = useState<boolean>(false)
+    const [selectedId, setSelectedId] = useState<number>(0)
 
 
     const getBuyersForTable = useCallback(async () => {
@@ -45,9 +47,9 @@ export const BuyerPage: FC = () => {
         setDataSource(result?.dataSource)
     },[])
 
-    const handleDelete = useCallback(async (id: number) => {
-        await deleteBuyer(id)
-        await getBuyersForTable();
+    const handleDelete = useCallback( (id: number) => {
+        setSelectedId(id);
+        setIsOpen(true)
     },[])
 
     useEffect(() => {
@@ -104,6 +106,20 @@ export const BuyerPage: FC = () => {
                                 }
                             </Table>
                         </Card>
+                        <Modal open={isOpen}
+                               onCancel={() => setIsOpen(false)}
+                               title="Вы точно хотите удалить?"
+                               cancelText="Нет"
+                               okText="Удалить"
+                               okType="danger"
+                               onOk={async () => {
+                                   setIsOpen(false);
+                                   await deleteBuyer(selectedId)
+                                   await getBuyersForTable();
+                               }}
+                        >
+                            <p>Вы не сможете вернуть удаленные данные!</p>
+                        </Modal>
                     </ConfigProvider>
                     :
                     <p>У ВАС ОТСУТСТВУЕТ ДОСТУП, ОБРАТИТЕТСЬ К АДМИНИСТРАТОРУ, ДЛЯ ПОЛУЧЕНИЯ ДОСТУПА К ЭТОЙ СТРАНИЦЕ</p>

@@ -1,5 +1,5 @@
 import {FC, useCallback, useEffect, useState} from "react";
-import {Button, Card, ConfigProvider, Form, Input, Select} from "antd";
+import {Button, Card, ConfigProvider, Form, Input, Modal, Select} from "antd";
 import {Arrow} from "../../../../shared/components/SVG/Arrow/Arrow.tsx";
 import {useNavigate, useParams} from "react-router-dom";
 import { getBanks, getBuyer, getStreets, updateBuyer} from "../../../../shared/api";
@@ -17,9 +17,10 @@ export const EditBuyerPage: FC = () => {
     const [isConfirm, setIsConfirm] = useState<boolean>(false);
     const [banksOptions, setBanksOptions] = useState()
     const [streetsOptions, setStreetsOptions] = useState()
+    const [isOpen, setIsOpen] = useState<boolean>(false)
 
 
-    const handleCreate = useCallback(async () => {
+    const handleUpdate = useCallback(async () => {
         setIsConfirm(false)
         const buyer = form.getFieldsValue();
         buyer['id'] = Number(id);
@@ -28,6 +29,11 @@ export const EditBuyerPage: FC = () => {
             setIsConfirm(true)
         }
     },[])
+
+    const handleSubmit = useCallback(() => {
+        setIsOpen(true)
+    },[])
+
 
     const getDataForForm = useCallback(async () => {
         const banks = await getBanks();
@@ -66,7 +72,7 @@ export const EditBuyerPage: FC = () => {
                 }}>
                     <Card title="Изменить компанию покупателя"
                           extra={<Button variant="text" onClick={() => navigate(-1)}><Arrow/>Назад</Button>}>
-                        <Form form={form} layout="vertical" onFinish={handleCreate} className="form-container">
+                        <Form form={form} layout="vertical" onFinish={handleSubmit} className="form-container">
                             <Form.Item name="name" label="Название компании покупателя" rules={[{required: true}]}>
                                 <Input/>
                             </Form.Item>
@@ -102,6 +108,16 @@ export const EditBuyerPage: FC = () => {
                             </Form.Item>
                         </Form>
                     </Card>
+                    <Modal open={isOpen}
+                           onCancel={() => setIsOpen(false)}
+                           title="Вы точно хотите изменить?"
+                           cancelText="Назад"
+                           okText="Изменить"
+                           onOk={() => {
+                               setIsOpen(false)
+                               handleUpdate()
+                           }}
+                    />
                 </ConfigProvider>
             </div>
         </>

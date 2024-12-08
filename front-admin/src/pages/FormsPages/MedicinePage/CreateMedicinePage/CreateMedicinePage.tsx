@@ -1,5 +1,5 @@
 import {FC, useCallback, useEffect, useState} from "react";
-import {Button, Card, ConfigProvider, DatePicker, Form, Input, Select} from "antd";
+import {Button, Card, ConfigProvider, DatePicker, Form, Input, Modal, Select} from "antd";
 import './CreateMedicinePage.scss'
 import {useNavigate} from "react-router-dom";
 import {Arrow} from "../../../../shared/components/SVG/Arrow/Arrow.tsx";
@@ -20,17 +20,29 @@ export const CreateMedicinePage: FC = () => {
     const [producerOptions, setProducerOptions] = useState();
     const [packageOptions, setPackageOptions] = useState();
     const [categoryOptions, setCategoryOptions] = useState();
+    const [dateError, setDateError] = useState<boolean>(false)
+    const [isOpen, setIsOpen] = useState<boolean>(false)
+
 
     const handleCreate = useCallback(async () => {
+        setDateError(false)
         const medicine = form.getFieldsValue()
         const productionFormatedDate = dayjs(medicine.production_date.$d).format('YYYY-MM-DD')
         const expirationFormatedDate = dayjs(medicine.expiration_date.$d).format('YYYY-MM-DD')
+        if(new Date(productionFormatedDate) > new Date(expirationFormatedDate)) {
+            setDateError(true)
+            return
+        }
         medicine.production_date = productionFormatedDate;
         medicine.expiration_date = expirationFormatedDate
         const result = await createMedicine(medicine)
         if(result) {
             navigate('/medicines')
         }
+    },[])
+
+    const handleSubmit = useCallback(() => {
+        setIsOpen(true)
     },[])
 
     const getDataForForm = useCallback(async () => {
@@ -75,7 +87,7 @@ export const CreateMedicinePage: FC = () => {
                     },
                 }}>
                     <Card title="Создать лекарство" extra={<Button variant="text" onClick={() => navigate(-1)}><Arrow/>Назад</Button>}>
-                        <Form form={form} layout="vertical" className="form-container" onFinish={handleCreate}>
+                        <Form form={form} layout="vertical" className="form-container" onFinish={handleSubmit}>
                             <Form.Item label="Название" name="name" rules={[{required: true}]}>
                                 <Input/>
                             </Form.Item>
@@ -85,11 +97,15 @@ export const CreateMedicinePage: FC = () => {
                             <Form.Item label="Срок годности" name="expiration_date" rules={[{required: true}]}>
                                 <DatePicker/>
                             </Form.Item>
+                            {dateError &&
+                                <p style={{color: "red", fontSize:"16px"}} >Дата срока годности не может быть меньше даты производства!</p>
+                            }
                             <Form.Item label="Регистрационный номер" name="registration_num" rules={[{required: true}]}>
                                 <Input maxLength={20}/>
                             </Form.Item>
                             <Form.Item label="Производитель" name="producer_name" rules={[{required: true}]}>
                                 <Select
+                                    mode="multiple"
                                     showSearch
                                     options={producerOptions}
                                     filterOption={(input, option) =>
@@ -99,6 +115,7 @@ export const CreateMedicinePage: FC = () => {
                             </Form.Item>
                             <Form.Item label="Упаковка" name="package_name" rules={[{required: true}]}>
                                 <Select
+                                    mode="multiple"
                                     showSearch
                                     options={packageOptions}
                                     filterOption={(input, option) =>
@@ -119,10 +136,17 @@ export const CreateMedicinePage: FC = () => {
                                 <Input maxLength={10} type="number"/>
                             </Form.Item>
                             <Form.Item className="submit-create-button">
-                                <Button type="primary" htmlType="submit">Создать сотдрудника</Button>
+                                <Button type="primary" htmlType="submit">Создать лекарство</Button>
                             </Form.Item>
                         </Form>
                     </Card>
+                    <Modal open={isOpen}
+                           onCancel={() => setIsOpen(false)}
+                           title="Вы точно хотите создать лекарство?"
+                           cancelText="Назад"
+                           okText="Создать"
+                           onOk={handleCreate}
+                    />
                 </ConfigProvider>
             </div>
         </>

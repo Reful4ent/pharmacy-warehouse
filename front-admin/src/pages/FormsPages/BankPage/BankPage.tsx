@@ -1,5 +1,5 @@
 import {FC, useCallback, useEffect, useState} from "react";
-import {Button, Card, ConfigProvider, Space, Table} from "antd";
+import {Button, Card, ConfigProvider, Modal, Space, Table} from "antd";
 import {deleteBank, getBanks} from "../../../shared/api";
 import Column from "antd/es/table/Column";
 import {useNavigate} from "react-router-dom";
@@ -16,15 +16,17 @@ export const BankPage: FC = () => {
     const navigate = useNavigate();
     const config = useConfig()
     const permissions = config?.permissions?.filter((permission) => permission.function == '/banks') ?? [];
+    const [isOpen, setIsOpen] = useState<boolean>(false)
+    const [selectedId, setSelectedId] = useState<number>(0)
 
     const getBanksForTable = useCallback(async () => {
         const banks = await getBanks();
         setDataSource(banks)
     },[])
 
-    const handleDelete = useCallback(async (id: number) => {
-        await deleteBank(id)
-        await getBanksForTable();
+    const handleDelete = useCallback( (id: number) => {
+        setSelectedId(id);
+        setIsOpen(true)
     },[])
 
     useEffect(() => {
@@ -77,6 +79,20 @@ export const BankPage: FC = () => {
                                 }
                             </Table>
                         </Card>
+                        <Modal open={isOpen}
+                               onCancel={() => setIsOpen(false)}
+                               title="Вы точно хотите удалить?"
+                               cancelText="Нет"
+                               okText="Удалить"
+                               okType="danger"
+                               onOk={async () => {
+                                   setIsOpen(false);
+                                   await deleteBank(selectedId)
+                                   await getBanksForTable();
+                               }}
+                        >
+                            <p>Вы не сможете вернуть удаленные данные!</p>
+                        </Modal>
                     </ConfigProvider>
                     :
                     <p>У ВАС ОТСУТСТВУЕТ ДОСТУП, ОБРАТИТЕТСЬ К АДМИНИСТРАТОРУ, ДЛЯ ПОЛУЧЕНИЯ ДОСТУПА К ЭТОЙ СТРАНИЦЕ</p>

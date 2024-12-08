@@ -1,7 +1,7 @@
 import {FC, useCallback, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {deleteEmployee, sendCustomRequest} from "../../../shared/api";
-import {Button, Card, ConfigProvider, Space, Table} from "antd";
+import {Button, Card, ConfigProvider, Modal, Space, Table} from "antd";
 import Column from "antd/es/table/Column";
 import "./EmployeePage.scss"
 import {useConfig} from "../../../app/context/ConfigProvider/context.ts";
@@ -19,6 +19,8 @@ export const EmployeePage: FC = () => {
     const [dataSource, setDataSource] = useState<Employee[]>([]);
     const navigate = useNavigate();
     const permissions = config?.permissions?.filter((permission) => permission.function == '/employees') ?? [];
+    const [isOpen, setIsOpen] = useState<boolean>(false)
+    const [selectedId, setSelectedId] = useState<number>(0)
 
 
     const getEmployeesForTable = useCallback(async () => {
@@ -34,9 +36,9 @@ export const EmployeePage: FC = () => {
         setDataSource(result?.dataSource)
     },[])
 
-    const handleDelete = useCallback(async (id: number) => {
-        await deleteEmployee(id)
-        await getEmployeesForTable();
+    const handleDelete = useCallback( (id: number) => {
+        setSelectedId(id);
+        setIsOpen(true)
     },[])
 
     useEffect(() => {
@@ -88,6 +90,20 @@ export const EmployeePage: FC = () => {
                                 }
                             </Table>
                         </Card>
+                        <Modal open={isOpen}
+                               onCancel={() => setIsOpen(false)}
+                               title="Вы точно хотите удалить?"
+                               cancelText="Нет"
+                               okText="Удалить"
+                               okType="danger"
+                               onOk={async () => {
+                                   setIsOpen(false);
+                                   await deleteEmployee(selectedId)
+                                   await getEmployeesForTable();
+                               }}
+                        >
+                            <p>Вы не сможете вернуть удаленные данные!</p>
+                        </Modal>
                     </ConfigProvider>
                     :
                     <p>У ВАС ОТСУТСТВУЕТ ДОСТУП, ОБРАТИТЕТСЬ К АДМИНИСТРАТОРУ, ДЛЯ ПОЛУЧЕНИЯ ДОСТУПА К ЭТОЙ СТРАНИЦЕ</p>

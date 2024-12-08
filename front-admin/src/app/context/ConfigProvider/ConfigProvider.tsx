@@ -33,7 +33,7 @@ export const ConfigProvider: FC<PropsWithChildren> = ({ children }) => {
 
     useEffect(() => {
         getConfigFrom(auth?.user?.id)
-    }, [auth?.isAuthenticated]);
+    }, [auth?.isAuthenticated, auth?.user?.id]);
 
 
     const value: IConfigContextValue = {

@@ -1,5 +1,5 @@
 import {FC, useCallback, useEffect, useState} from "react";
-import {Button, Card, ConfigProvider, Space, Table} from "antd";
+import {Button, Card, ConfigProvider, Modal, Space, Table} from "antd";
 import {deleteCountry, getCountries} from "../../../shared/api";
 import Column from "antd/es/table/Column";
 import {useNavigate} from "react-router-dom";
@@ -16,15 +16,17 @@ export const CountryPage: FC = () => {
     const navigate = useNavigate();
     const config = useConfig()
     const permissions = config?.permissions?.filter((permission) => permission.function == '/countries') ?? [];
+    const [isOpen, setIsOpen] = useState<boolean>(false)
+    const [selectedId, setSelectedId] = useState<number>(0)
 
     const getCountriesForTable = useCallback(async () => {
         const streets = await getCountries();
         setDataSource(streets)
     },[])
 
-    const handleDelete = useCallback(async (id: number) => {
-        await deleteCountry(id)
-        await getCountriesForTable();
+    const handleDelete = useCallback( (id: number) => {
+        setSelectedId(id);
+        setIsOpen(true)
     },[])
 
     useEffect(() => {
@@ -77,6 +79,20 @@ export const CountryPage: FC = () => {
                                 }
                             </Table>
                         </Card>
+                        <Modal open={isOpen}
+                               onCancel={() => setIsOpen(false)}
+                               title="Вы точно хотите удалить?"
+                               cancelText="Нет"
+                               okText="Удалить"
+                               okType="danger"
+                               onOk={async () => {
+                                   setIsOpen(false);
+                                   await deleteCountry(selectedId)
+                                   await getCountriesForTable();
+                               }}
+                        >
+                            <p>Вы не сможете вернуть удаленные данные!</p>
+                        </Modal>
                     </ConfigProvider>
                     :
                     <p>У ВАС ОТСУТСТВУЕТ ДОСТУП, ОБРАТИТЕТСЬ К АДМИНИСТРАТОРУ, ДЛЯ ПОЛУЧЕНИЯ ДОСТУПА К ЭТОЙ СТРАНИЦЕ</p>
