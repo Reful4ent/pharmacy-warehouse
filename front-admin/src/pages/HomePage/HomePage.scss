@@ -1,0 +1,16 @@
+.home-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 700px;
+
+  .home-text-head {
+    color: #04aa6d;
+  }
+  .home-text-main {
+    font-family: Urbanist;
+    font-size: 20px;
+  }
+}

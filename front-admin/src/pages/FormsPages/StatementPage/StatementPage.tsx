@@ -58,7 +58,7 @@ export const StatementPage: FC = () => {
                             <Table dataSource={dataSource} bordered>
                                 <Column title="ID" dataIndex="id" key="id"/>
                                 <Column title="Номер" dataIndex="number" key='number'/>
-                                <Column title="Дата поступления" dataIndex="receipt_date" key="receipt_date"/>
+                                <Column title="Дата поступления" dataIndex="receipt_date" key="receipt_date" render={date => date.split('T')[0]}/>
                                 <Column title="ID поставщика" dataIndex="supplier_id" key="supplier_id"/>
                                 <Column title="Сумма" dataIndex="total_sum" key="total_sum"/>
                                 <Column

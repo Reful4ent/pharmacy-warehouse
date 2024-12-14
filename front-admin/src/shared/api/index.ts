@@ -1217,6 +1217,21 @@ export const getInvoices = async () => {
     }
 }
 
+export const getInvoice = async (id: number) => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/invoices/' + id,
+        )
+        return response.data
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
 export const deleteInvoice = async (id: number) => {
     try {
         await axios.delete(

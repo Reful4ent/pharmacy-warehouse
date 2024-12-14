@@ -1,14 +1,13 @@
 import {FC} from "react";
+import './HomePage.scss'
 
 export const HomePage: FC = () => {
 
     return(
         <>
-            <div className="error-page">
-                    <h1 className="error-text-head">Oops!</h1>
-                    <p className="error-text-main">Sorry, an unexpected error has occurred.</p>
-                    <p className="error-text-error">
-                </p>
+            <div className="home-page">
+                <h1 className="home-text-head">Домашняя страница!</h1>
+                <p className="home-text-main">Аптечный склад №1</p>
             </div>
         </>
     )

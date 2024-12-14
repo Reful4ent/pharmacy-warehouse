@@ -1,5 +1,5 @@
 import {FC, useCallback, useEffect, useState} from "react";
-import {Button, Card, ConfigProvider, DatePicker, Form, Input, Select} from "antd";
+import {Button, Card, ConfigProvider, DatePicker, Form, Input, Modal, Select} from "antd";
 import "./EditMedicinePage.scss"
 import {Arrow} from "../../../../shared/components/SVG/Arrow/Arrow.tsx";
 import {useNavigate, useParams} from "react-router-dom";
@@ -24,8 +24,9 @@ export const EditMedicinePage: FC = () => {
     const [packageOptions, setPackageOptions] = useState();
     const [categoryOptions, setCategoryOptions] = useState();
     const [dateError, setDateError] = useState<boolean>(false)
+    const [isOpen, setIsOpen] = useState<boolean>(false)
 
-    const handleCreate = useCallback(async () => {
+    const handleUpdate = useCallback(async () => {
         setDateError(false)
         const medicine = form.getFieldsValue()
         medicine['id'] = Number(id);
@@ -41,6 +42,10 @@ export const EditMedicinePage: FC = () => {
         if(result) {
             setIsConfirm(true)
         }
+    },[])
+
+    const handleSubmit = useCallback(() => {
+        setIsOpen(true)
     },[])
 
     const getDataForForm = useCallback(async () => {
@@ -88,7 +93,7 @@ export const EditMedicinePage: FC = () => {
                     },
                 }}>
                     <Card title="Изменить лекарство" extra={<Button variant="text" onClick={() => navigate(-1)}><Arrow/>Назад</Button>}>
-                        <Form form={form} layout="vertical" className="form-container" onFinish={handleCreate}>
+                        <Form form={form} layout="vertical" className="form-container" onFinish={handleSubmit}>
                             <Form.Item label="Название" name="name" rules={[{required: true}]}>
                                 <Input/>
                             </Form.Item>
@@ -144,6 +149,16 @@ export const EditMedicinePage: FC = () => {
                             </Form.Item>
                         </Form>
                     </Card>
+                    <Modal open={isOpen}
+                           onCancel={() => setIsOpen(false)}
+                           title="Вы точно хотите изменить?"
+                           cancelText="Назад"
+                           okText="Изменить"
+                           onOk={() => {
+                               setIsOpen(false)
+                               handleUpdate()
+                           }}
+                    />
                 </ConfigProvider>
             </div>
         </>

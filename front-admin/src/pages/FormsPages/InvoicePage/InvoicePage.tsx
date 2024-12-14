@@ -1,13 +1,18 @@
 import {FC, useCallback, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {deleteInvoice, getInvoices} from "../../../shared/api";
-import {Button, Card, ConfigProvider, Space, Table} from "antd";
+import { deleteInvoice, getInvoices} from "../../../shared/api";
+import {Button, Card, ConfigProvider, Modal, Space, Table} from "antd";
 import Column from "antd/es/table/Column";
 import "./InvoicePage.scss"
 import {useConfig} from "../../../app/context/ConfigProvider/context.ts";
 
 export type Invoice = {
-
+    id: number,
+    number: string,
+    discharge_date: string;
+    employee_id: number;
+    buyer_id: number;
+    total_sum: number;
 }
 
 
@@ -17,15 +22,18 @@ export const InvoicePage: FC = () => {
     const navigate = useNavigate();
     const config = useConfig()
     const permissions = config?.permissions?.filter((permission) => permission.function == '/invoices') ?? [];
+    const [isOpen, setIsOpen] = useState<boolean>(false)
+    const [selectedId, setSelectedId] = useState<number>(0)
 
     const getInvoicesForTable = useCallback(async () => {
         const invoices = await getInvoices();
         setDataSource(invoices)
     },[])
 
-    const handleDelete = useCallback(async (id: number) => {
-        await deleteInvoice(id)
-        await getInvoicesForTable();
+
+    const handleDelete = useCallback( (id: number) => {
+        setSelectedId(id);
+        setIsOpen(true)
     },[])
 
     useEffect(() => {
@@ -58,9 +66,9 @@ export const InvoicePage: FC = () => {
                             <Table dataSource={dataSource} bordered>
                                 <Column title="ID" dataIndex="id" key="id"/>
                                 <Column title="Номер" dataIndex="number" key='number'/>
-                                <Column title="Дата выписки" dataIndex="discharge_date" key="discharge_date"/>
-                                <Column title="ID сотрудника" dataIndex="employee_id" key="employee_id"/>
-                                <Column title="ID покупателя" dataIndex="buyer_id" key="buyer_id"/>
+                                <Column title="Дата выписки" dataIndex="discharge_date" key="discharge_date" render={date => date.split('T')[0]}/>
+                                <Column title="Сотрудник" dataIndex="surname" key="surname"/>
+                                <Column title="Покупатель" dataIndex="name" key="name"/>
                                 <Column title="Сумма" dataIndex="total_sum" key="total_sum"/>
                                 <Column
                                     title="Действия"
@@ -82,6 +90,20 @@ export const InvoicePage: FC = () => {
                                 />
                             </Table>
                         </Card>
+                        <Modal open={isOpen}
+                               onCancel={() => setIsOpen(false)}
+                               title="Вы точно хотите удалить?"
+                               cancelText="Нет"
+                               okText="Удалить"
+                               okType="danger"
+                               onOk={async () => {
+                                   setIsOpen(false);
+                                   await deleteInvoice(selectedId)
+                                   await getInvoicesForTable();
+                               }}
+                        >
+                            <p>Вы не сможете вернуть удаленные данные!</p>
+                        </Modal>
                     </ConfigProvider>
                     :
                     <p>У ВАС ОТСУТСТВУЕТ ДОСТУП, ОБРАТИТЕТСЬ К АДМИНИСТРАТОРУ, ДЛЯ ПОЛУЧЕНИЯ ДОСТУПА К ЭТОЙ СТРАНИЦЕ</p>
