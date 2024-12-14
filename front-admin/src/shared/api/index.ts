@@ -13,6 +13,7 @@ import {Supplier} from "../../pages/FormsPages/SupplierPage/SupplierPage.tsx";
 import {Producer} from "../../pages/FormsPages/ProducerPage/ProducerPage.tsx";
 import {User} from "../../app/context/AuthProvider/types.ts";
 import {Medicine} from "../../pages/FormsPages/MedicinePage/MedicinePage.tsx";
+import {Invoice} from "../../pages/FormsPages/InvoicePage/InvoicePage.tsx";
 
 
 export const getConfig = async () => {
@@ -1237,6 +1238,48 @@ export const deleteInvoice = async (id: number) => {
         await axios.delete(
             urlRoute + '/invoices/' + id,
         ).finally()
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+export type MedicineToInvoice = {
+    medicine_id: number,
+    price_that_time: number,
+    quantity: number,
+}
+
+export const createInvoice = async (invoice: Invoice, medicines: MedicineToInvoice[]) => {
+    try {
+        const result = await axios.post(
+            urlRoute + '/invoices/create',
+            {
+                number_of_invoice: invoice.number,
+                discharge_date: invoice.discharge_date,
+                employee_id: invoice.employee_id,
+                buyer_id: invoice.buyer_id,
+                total_sum: invoice.total_sum,
+            }
+        )
+
+        const id = result.data.id;
+
+        for (const medicine of medicines) {
+            try {
+                await sendCustomRequest(`INSERT INTO
+                                                    invoice_medicine (invoice_id, medicine_id, price_that_time, quantity)
+                                                 VALUES (${id}, ${medicine.medicine_id}, ${medicine.price_that_time}, ${medicine.quantity})`);
+            } catch (error) {
+                console.error('Error inserting into medicine_package:', error);
+            }
+        }
+
+        console.log(result.data.id);
         return true;
     } catch (error: any) {
         console.log(error.response.data.error);

@@ -2,11 +2,23 @@ import {FC, useCallback, useEffect, useState} from "react";
 import {Button, Card, Col, ConfigProvider, DatePicker, Form, Input, Modal, Row, Select, Typography} from "antd";
 import {Arrow} from "../../../../shared/components/SVG/Arrow/Arrow.tsx";
 import {useNavigate} from "react-router-dom";
-import { getBuyers, getEmployees, getMedicines, sendCustomRequest} from "../../../../shared/api";
+import {createInvoice, getBuyers, getEmployees, getMedicines, sendCustomRequest} from "../../../../shared/api";
 import {Employee} from "../../EmployeePage/EmployeePage.tsx";
 import {Buyer} from "../../BuyerPage/BuyerPage.tsx";
 import {Medicine} from "../../MedicinePage/MedicinePage.tsx";
 import "./CreateInvoicePage.scss"
+import dayjs from "dayjs";
+
+
+/*
+* await createInvoice({
+            id: null,
+            number: invoice.number,
+            discharge_date: invoice.discharge_date,
+            employee_id: invoice.surname,
+            buyer_id: invoice.name,
+            total_sum: invoice.total_sum
+        }, medicines)*/
 
 export const CreateInvoicePage: FC = () => {
     const navigate = useNavigate()
@@ -18,6 +30,41 @@ export const CreateInvoicePage: FC = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
 
     const handleCreate = useCallback(async () => {
+        const invoice = form.getFieldsValue()
+        console.log(invoice)
+        const productionFormatedDate = dayjs(invoice.discharge_date.$d).format('YYYY-MM-DD')
+        invoice.discharge_date = productionFormatedDate;
+
+        const medicines = invoice?.medicines?.map((medicine: any) => (
+            {
+                medicine_id: medicine.medicine,
+                price_that_time: medicine.medicinePriceThatTime,
+                quantity: medicine.medicineQuantity
+        }))
+
+        const aggregatedMedicines = medicines.reduce((acc, current) => {
+            const existing = acc.find(item => item.medicine_id === current.medicine_id);
+            if (existing) {
+                existing.quantity = (parseInt(existing.quantity) + parseInt(current.quantity)).toString();
+            } else {
+                acc.push({ ...current });
+            }
+
+            return acc;
+        }, []);
+
+        const result = await createInvoice({
+            id: null,
+            number: invoice.number,
+            discharge_date: invoice.discharge_date,
+            employee_id: invoice.surname,
+            buyer_id: invoice.name,
+            total_sum: invoice.total_sum
+        }, aggregatedMedicines)
+
+        if(result) {
+            navigate('/invoices')
+        }
 
     },[])
 
@@ -80,13 +127,13 @@ export const CreateInvoicePage: FC = () => {
                         extra={<Button variant="text" onClick={() => navigate(-1)}><Arrow/>Назад</Button>}
                     >
                         <Form form={form} layout="vertical" onFinish={handleSubmit} className="form-container">
-                            <Form.Item label="Номер" name="number" key="number">
+                            <Form.Item label="Номер" name="number" key="number" rules={[{ required: true }]}>
                                 <Input readOnly/>
                             </Form.Item>
-                            <Form.Item label="Дата поступления" name="discharge_date" key="discharge_date">
+                            <Form.Item label="Дата поступления" name="discharge_date" key="discharge_date" rules={[{ required: true }]}>
                                 <DatePicker/>
                             </Form.Item>
-                            <Form.Item label="Сотрудник" name="surname" key="surname">
+                            <Form.Item label="Сотрудник" name="surname" key="surname" rules={[{ required: true }]}>
                                 <Select
                                     showSearch
                                     options={employeeOptions}
@@ -95,7 +142,7 @@ export const CreateInvoicePage: FC = () => {
                                     }
                                 />
                             </Form.Item>
-                            <Form.Item label="Покупатель" name="name" key="name">
+                            <Form.Item label="Покупатель" name="name" key="name" rules={[{ required: true }]}>
                                 <Select
                                     showSearch
                                     options={buyerOptions}

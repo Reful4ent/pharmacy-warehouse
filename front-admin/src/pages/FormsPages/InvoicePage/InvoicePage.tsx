@@ -7,7 +7,7 @@ import "./InvoicePage.scss"
 import {useConfig} from "../../../app/context/ConfigProvider/context.ts";
 
 export type Invoice = {
-    id: number,
+    id: number | null,
     number: string,
     discharge_date: string;
     employee_id: number;
