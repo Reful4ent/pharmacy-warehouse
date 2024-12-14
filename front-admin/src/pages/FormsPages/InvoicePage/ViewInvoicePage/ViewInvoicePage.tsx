@@ -33,7 +33,8 @@ export const ViewInvoicePage: FC = () => {
                                                                                             JOIN
                                                                                                 medicine ON invoice_medicine.medicine_id = medicine.id
                                                                                             WHERE
-                                                                                                invoice_medicine.invoice_id = ${Number(id)}`)
+                                                                                                invoice_medicine.invoice_id = ${Number(id)}
+        `)
         setDataSource(responseTable?.dataSource)
     }, [])
 
@@ -74,10 +75,10 @@ export const ViewInvoicePage: FC = () => {
                             <Form.Item label="Дата поступления" name="discharge_date" key="discharge_date" >
                                 <Input readOnly/>
                             </Form.Item>
-                            <Form.Item label="Сотрудник" name="surname" key="surname" >
+                            <Form.Item label="Сотрудник" name="employee_surname" key="employee_surname" >
                                 <Input readOnly/>
                             </Form.Item>
-                            <Form.Item label="Покупатель" name="name" key="name" >
+                            <Form.Item label="Покупатель" name="buyer_name" key="buyer_name" >
                                 <Input readOnly/>
                             </Form.Item>
                             <Table bordered dataSource={dataSource}>

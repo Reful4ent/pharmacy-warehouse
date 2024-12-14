@@ -7,11 +7,13 @@ import "./InvoicePage.scss"
 import {useConfig} from "../../../app/context/ConfigProvider/context.ts";
 
 export type Invoice = {
-    id: number | null,
+    id: number | null | undefined,
     number: string,
     discharge_date: string;
-    employee_id: number;
-    buyer_id: number;
+    employee_surname: string | null | undefined;
+    buyer_name: string | null | undefined;
+    employee_id: number | null | undefined;
+    buyer_id: number | null | undefined;
     total_sum: number;
 }
 
@@ -67,8 +69,8 @@ export const InvoicePage: FC = () => {
                                 <Column title="ID" dataIndex="id" key="id"/>
                                 <Column title="Номер" dataIndex="number" key='number'/>
                                 <Column title="Дата выписки" dataIndex="discharge_date" key="discharge_date" render={date => date.split('T')[0]}/>
-                                <Column title="Сотрудник" dataIndex="surname" key="surname"/>
-                                <Column title="Покупатель" dataIndex="name" key="name"/>
+                                <Column title="Сотрудник" dataIndex="employee_surname" key="surname"/>
+                                <Column title="Покупатель" dataIndex="buyer_name" key="name"/>
                                 <Column title="Сумма" dataIndex="total_sum" key="total_sum"/>
                                 <Column
                                     title="Действия"

@@ -10,16 +10,6 @@ import "./CreateInvoicePage.scss"
 import dayjs from "dayjs";
 
 
-/*
-* await createInvoice({
-            id: null,
-            number: invoice.number,
-            discharge_date: invoice.discharge_date,
-            employee_id: invoice.surname,
-            buyer_id: invoice.name,
-            total_sum: invoice.total_sum
-        }, medicines)*/
-
 export const CreateInvoicePage: FC = () => {
     const navigate = useNavigate()
     const [form] = Form.useForm()
@@ -31,7 +21,6 @@ export const CreateInvoicePage: FC = () => {
 
     const handleCreate = useCallback(async () => {
         const invoice = form.getFieldsValue()
-        console.log(invoice)
         const productionFormatedDate = dayjs(invoice.discharge_date.$d).format('YYYY-MM-DD')
         invoice.discharge_date = productionFormatedDate;
 
@@ -57,9 +46,11 @@ export const CreateInvoicePage: FC = () => {
             id: null,
             number: invoice.number,
             discharge_date: invoice.discharge_date,
-            employee_id: invoice.surname,
-            buyer_id: invoice.name,
-            total_sum: invoice.total_sum
+            employee_id: invoice.employee_surname,
+            buyer_id: invoice.buyer_name,
+            total_sum: invoice.total_sum,
+            employee_surname: null,
+            buyer_name: null,
         }, aggregatedMedicines)
 
         if(result) {
@@ -73,8 +64,13 @@ export const CreateInvoicePage: FC = () => {
     },[])
 
     const getData = useCallback(async () => {
-        const response = await sendCustomRequest(`SELECT MAX(id) AS max_id FROM invoice`)
-        let max_id = response.dataSource[0].max_id + 1;
+        const response = await sendCustomRequest(`SELECT
+                                                                                            number 
+                                                                                     FROM 
+                                                                                            invoice 
+                                                                                     WHERE id = (SELECT MAX(id) FROM invoice)
+        `);
+        let max_id = String(Number(response.dataSource[0].number)+ 1);
         const length = String(max_id).length;
         for(let i = 0; i<10-length; i++)
             max_id = '0' + max_id;
@@ -133,7 +129,7 @@ export const CreateInvoicePage: FC = () => {
                             <Form.Item label="Дата поступления" name="discharge_date" key="discharge_date" rules={[{ required: true }]}>
                                 <DatePicker/>
                             </Form.Item>
-                            <Form.Item label="Сотрудник" name="surname" key="surname" rules={[{ required: true }]}>
+                            <Form.Item label="Сотрудник" name="employee_surname" key="employee_surname" rules={[{ required: true }]}>
                                 <Select
                                     showSearch
                                     options={employeeOptions}
@@ -142,7 +138,7 @@ export const CreateInvoicePage: FC = () => {
                                     }
                                 />
                             </Form.Item>
-                            <Form.Item label="Покупатель" name="name" key="name" rules={[{ required: true }]}>
+                            <Form.Item label="Покупатель" name="buyer_name" key="buyer_name" rules={[{ required: true }]}>
                                 <Select
                                     showSearch
                                     options={buyerOptions}
