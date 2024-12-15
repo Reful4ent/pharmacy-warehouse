@@ -41,19 +41,15 @@ class StatementController {
                                   JOIN
                                         supplier ON statements.supplier_id = supplier.id
                                   WHERE 
-                                        ($1::text IS NULL OR number ILIKE $1) 
-                                        AND ($2::date IS NULL OR receipt_date::date = $2::date)
-                                        AND ($3::text IS NULL OR supplier.name ILIKE $3) 
-                                        AND ($4::decimal IS NULL OR total_sum = $4);
+                                        ($1::text IS NULL OR number ILIKE $1)
+                                        AND ($2::text IS NULL OR supplier.name ILIKE $2)
         `;
 
-        const { number, receipt_date, supplier_name, total_sum } = req.body ?? {};
+        const { number_of_statement, supplier_name } = req.body ?? {};
 
         const values = [
-            number ? `%${number}%` : null,
-            receipt_date,
+            number_of_statement ? `%${number_of_statement}%` : null,
             supplier_name ? `%${supplier_name}%` : null,
-            total_sum,
         ]
 
         try {
@@ -118,6 +114,7 @@ class StatementController {
 
         try {
             const statement = await db.query(`DELETE FROM statements WHERE id = ${id}`);
+            res.status(200).json(statement.rows[0]);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

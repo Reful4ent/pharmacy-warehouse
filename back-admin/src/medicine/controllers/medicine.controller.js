@@ -28,24 +28,53 @@ class MedicineController {
         }
     }
 
-    //ToDo: сделать так чтобы время проверялось в get
     async getMedicines(req, res) {
-        let requestToDB = `SELECT * FROM medicine 
-                                  WHERE ($1::text IS NULL OR name ILIKE $1) 
-                                  AND ($2::date IS NULL OR production_date::date = $2::date)
-                                  AND ($3::date IS NULL OR expiration_date::date = $3::date) 
-                                  AND ($4::text IS NULL OR registration_num ILIKE $4) 
-                                  AND ($5::decimal IS NULL OR price = $5)
+        let requestToDB = `SELECT 
+                                      medicine.id,
+                                      medicine.name,
+                                      medicine.production_date,
+                                      medicine.expiration_date,
+                                      medicine.registration_num,
+                                      medicine.price,
+                                      producer.name AS producer_name,
+                                      STRING_AGG(DISTINCT category.name, ', ') AS category_names,
+                                      package.name AS package_name,
+                                      country.name AS country_name
+                                  FROM 
+                                      medicine
+                                  LEFT JOIN 
+                                      medicine_producer ON medicine.id = medicine_producer.medicine_id
+                                  LEFT JOIN 
+                                      producer ON medicine_producer.producer_id = producer.id
+                                  LEFT JOIN 
+                                      medicine_category ON medicine.id = medicine_category.medicine_id
+                                  LEFT JOIN 
+                                      category ON medicine_category.category_id = category.id
+                                  LEFT JOIN 
+                                      medicine_package ON medicine.id = medicine_package.medicine_id
+                                  LEFT JOIN 
+                                      package ON medicine_package.package_id = package.id
+                                  LEFT JOIN 
+                                      country ON producer.country_id = country.id
+                                  WHERE ($1::text IS NULL OR medicine.name ILIKE $1)
+                                  AND ($2::text IS NULL OR medicine.registration_num ILIKE $2)
+                                  GROUP BY 
+                                      medicine.id, 
+                                      medicine.name, 
+                                      medicine.production_date, 
+                                      medicine.expiration_date, 
+                                      medicine.registration_num, 
+                                      medicine.price, 
+                                      producer.name, 
+                                      package.name, 
+                                      country.name; 
         `;
 
-        const { name, production_date, expiration_date, registration_num, price } = req.body ?? {};
+        const { name, registration_num } = req.body ?? {};
 
         const values = [
             name ? `%${name}%` : null,
-            production_date,
-            expiration_date,
             registration_num ? `%${registration_num}%` : null,
-            price,
         ]
 
 
@@ -101,6 +130,7 @@ class MedicineController {
 
         try {
             const medicine = await db.query(`DELETE FROM medicine WHERE id=${id}`)
+            res.status(200).json(medicine.rows[0]);
         } catch (error) {
             res.status(500).send({error: error.message})
         }
