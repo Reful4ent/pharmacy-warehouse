@@ -14,6 +14,7 @@ import {Producer} from "../../pages/FormsPages/ProducerPage/ProducerPage.tsx";
 import {User} from "../../app/context/AuthProvider/types.ts";
 import {Medicine} from "../../pages/FormsPages/MedicinePage/MedicinePage.tsx";
 import {Invoice} from "../../pages/FormsPages/InvoicePage/InvoicePage.tsx";
+import {Statement} from "../../pages/FormsPages/StatementPage/StatementPage.tsx";
 
 
 export const getConfig = async () => {
@@ -1349,11 +1350,101 @@ export const getStatements = async () => {
     }
 }
 
+
+export const getStatement = async (id: number) => {
+    try {
+        const response = await axios.get(
+            urlRoute + '/statements/' + id,
+        )
+        return response.data
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
 export const deleteStatement = async (id: number) => {
     try {
         await axios.delete(
             urlRoute + '/statements/' + id,
         ).finally()
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+
+export const createStatement = async (statement: Statement, medicines: MedicineToInvoice[]) => {
+    try {
+        const result = await axios.post(
+            urlRoute + '/statements/create',
+            {
+                number_of_statement: statement.number,
+                receipt_date: statement.receipt_date,
+                supplier_id: statement.supplier_id,
+                total_sum: statement.total_sum,
+            }
+        )
+
+        const id = result.data.id;
+
+        for (const medicine of medicines) {
+            try {
+                await sendCustomRequest(`INSERT INTO
+                                                    statements_medicine (statements_id, medicine_id, price_that_time, quantity)
+                                                 VALUES (${id}, ${medicine.medicine_id}, ${medicine.price_that_time}, ${medicine.quantity})`);
+            } catch (error) {
+                console.error('Error inserting into medicine_package:', error);
+            }
+        }
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+
+export const updateStatement = async (statement: Statement, medicines: MedicineToInvoice[]) => {
+    try {
+        const result = await axios.put(
+            urlRoute + '/statements/' + statement.id,
+            {
+                number_of_statement: statement.number,
+                receipt_date: statement.receipt_date,
+                supplier_id: statement.supplier_id,
+                total_sum: statement.total_sum,
+            }
+        )
+
+        try{
+            await sendCustomRequest(`DELETE FROM statements_medicine WHERE statements_id=${statement.id}`);
+        } catch (error) {
+            console.error(error);
+        }
+
+        for (const medicine of medicines) {
+            try {
+                await sendCustomRequest(`INSERT INTO
+                                                    statements_medicine (statements_id, medicine_id, price_that_time, quantity)
+                                                 VALUES (${statement.id}, ${medicine.medicine_id}, ${medicine.price_that_time}, ${medicine.quantity})`);
+            } catch (error) {
+                console.error('Error inserting into medicine_package:', error);
+            }
+        }
+
+        console.log(result.data.id);
         return true;
     } catch (error: any) {
         console.log(error.response.data.error);

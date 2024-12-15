@@ -7,7 +7,12 @@ import "./StatementPage.scss"
 import {useConfig} from "../../../app/context/ConfigProvider/context.ts";
 
 export type Statement = {
-
+    id: number | null | undefined,
+    number: string,
+    receipt_date: string,
+    total_sum: number,
+    supplier_id: number | null | undefined,
+    supplier_name: string | null | undefined,
 }
 
 
@@ -59,7 +64,7 @@ export const StatementPage: FC = () => {
                                 <Column title="ID" dataIndex="id" key="id"/>
                                 <Column title="Номер" dataIndex="number" key='number'/>
                                 <Column title="Дата поступления" dataIndex="receipt_date" key="receipt_date" render={date => date.split('T')[0]}/>
-                                <Column title="ID поставщика" dataIndex="supplier_id" key="supplier_id"/>
+                                <Column title="Поставщик" dataIndex="supplier_name" key="supplier_name"/>
                                 <Column title="Сумма" dataIndex="total_sum" key="total_sum"/>
                                 <Column
                                     title="Действия"
