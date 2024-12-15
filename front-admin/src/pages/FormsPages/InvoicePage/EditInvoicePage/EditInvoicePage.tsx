@@ -7,7 +7,7 @@ import {
     getBuyers,
     getEmployees,
     getInvoice,
-    getMedicines, sendCustomRequest,
+    getMedicines, sendCustomRequest, updateInvoice,
 } from "../../../../shared/api";
 import {Employee} from "../../EmployeePage/EmployeePage.tsx";
 import {Buyer} from "../../BuyerPage/BuyerPage.tsx";
@@ -25,7 +25,42 @@ export const EditInvoicePage: FC = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false)
 
     const handleUpdate = useCallback(async () => {
-        console.log(form.getFieldsValue())
+        const invoice = form.getFieldsValue()
+        const productionFormatedDate = dayjs(invoice.discharge_date.$d).format('YYYY-MM-DD')
+        invoice.discharge_date = productionFormatedDate;
+
+        const medicines = invoice?.medicines?.map((medicine: any) => (
+            {
+                medicine_id: medicine.medicine,
+                price_that_time: medicine.medicinePriceThatTime,
+                quantity: medicine.medicineQuantity
+            }))
+
+        const aggregatedMedicines = medicines.reduce((acc, current) => {
+            const existing = acc.find(item => item.medicine_id === current.medicine_id);
+            if (existing) {
+                existing.quantity = (parseInt(existing.quantity) + parseInt(current.quantity)).toString();
+            } else {
+                acc.push({ ...current });
+            }
+
+            return acc;
+        }, []);
+
+        const result = await updateInvoice({
+            id: Number(id),
+            number: invoice.number,
+            discharge_date: invoice.discharge_date,
+            employee_id: invoice.employee_id,
+            buyer_id: invoice.buyer_id,
+            total_sum: invoice.total_sum,
+            employee_surname: null,
+            buyer_name: null,
+        }, aggregatedMedicines)
+
+        if(result) {
+            navigate('/invoices')
+        }
     },[])
 
     const handleSubmit = useCallback(() => {
@@ -175,7 +210,7 @@ export const EditInvoicePage: FC = () => {
                                                                 name={[field.name, 'medicinePriceThatTime']}
                                                                 rules={[{required: true}]}
                                                             >
-                                                                <Input/>
+                                                                <Input readOnly/>
                                                             </Form.Item>
                                                             <Form.Item
                                                                 label="Количество"
@@ -204,7 +239,7 @@ export const EditInvoicePage: FC = () => {
 
                                             <Button type="dashed" block
                                                     onClick={() => add({type: 'product.extra-image', url: ''})}>
-                                                + Добавить слайд
+                                                + Добавить лекарство
                                             </Button>
                                         </>
                                     )}

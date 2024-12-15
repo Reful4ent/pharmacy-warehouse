@@ -40,7 +40,7 @@ export const InvoicePage: FC = () => {
 
     useEffect(() => {
         getInvoicesForTable()
-    }, [dataSource]);
+    }, []);
 
     return (
         <>

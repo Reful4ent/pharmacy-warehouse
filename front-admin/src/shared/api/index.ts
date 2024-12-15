@@ -1292,6 +1292,47 @@ export const createInvoice = async (invoice: Invoice, medicines: MedicineToInvoi
     }
 }
 
+export const updateInvoice = async (invoice: Invoice, medicines: MedicineToInvoice[]) => {
+    try {
+
+        console.log(invoice)
+        const result = await axios.put(
+            urlRoute + '/invoices/' + invoice.id,
+            {
+                number_of_invoice: invoice.number,
+                discharge_date: invoice.discharge_date,
+                employee_id: invoice.employee_id,
+                buyer_id: invoice.buyer_id,
+                total_sum: invoice.total_sum,
+            }
+        )
+
+        try{
+            await sendCustomRequest(`DELETE FROM invoice_medicine WHERE invoice_id=${invoice.id}`);
+        } catch (error) {
+            console.error(error);
+        }
+
+        for (const medicine of medicines) {
+            try {
+                await sendCustomRequest(`INSERT INTO
+                                                    invoice_medicine (invoice_id, medicine_id, price_that_time, quantity)
+                                                 VALUES (${invoice.id}, ${medicine.medicine_id}, ${medicine.price_that_time}, ${medicine.quantity})`);
+            } catch (error) {
+                console.error('Error inserting into medicine_package:', error);
+            }
+        }
+
+        console.log(result.data.id);
+        return true;
+    } catch (error: any) {
+        console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
 
 export const getStatements = async () => {
     try {

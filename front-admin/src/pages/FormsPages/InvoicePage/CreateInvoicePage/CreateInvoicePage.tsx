@@ -226,7 +226,7 @@ export const CreateInvoicePage: FC = () => {
                                             </Row>
 
                                             <Button type="dashed" block onClick={() => add({ type: 'product.extra-image', url: '' })}>
-                                                + Добавить слайд
+                                                + Добавить лекарство
                                             </Button>
                                         </>
                                     )}
