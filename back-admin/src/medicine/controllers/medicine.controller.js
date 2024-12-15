@@ -14,7 +14,7 @@ class MedicineController {
                 const newMedicine = await db.query(`INSERT INTO medicine (name, production_date, expiration_date, registration_num, price) 
                                                     VALUES ('${dataFromRequest.name}',
                                                             '${dataFromRequest.production_date}',
-                                                            INTERVAL '${dataFromRequest.expiration_date}',
+                                                            '${dataFromRequest.expiration_date}',
                                                             '${dataFromRequest.registration_num}',
                                                             ${dataFromRequest.price})
                                                     RETURNING *`)
@@ -33,7 +33,7 @@ class MedicineController {
         let requestToDB = `SELECT * FROM medicine 
                                   WHERE ($1::text IS NULL OR name ILIKE $1) 
                                   AND ($2::date IS NULL OR production_date::date = $2::date)
-                                  AND ($3::interval IS NULL OR expiration_date = $3) 
+                                  AND ($3::date IS NULL OR expiration_date::date = $3::date) 
                                   AND ($4::text IS NULL OR registration_num ILIKE $4) 
                                   AND ($5::decimal IS NULL OR price = $5)
         `;
@@ -82,11 +82,11 @@ class MedicineController {
                 const medicine = await db.query(`UPDATE medicine 
                                                  SET name='${dataFromRequest.name}', 
                                                      production_date='${dataFromRequest.production_date}', 
-                                                     expiration_date = INTERVAL '${dataFromRequest.expiration_date}', 
+                                                     expiration_date = '${dataFromRequest.expiration_date}', 
                                                      registration_num='${dataFromRequest.registration_num}', 
                                                      price=${dataFromRequest.price}
                                                  WHERE id=${id} 
-                                                 RETURNING *'`)
+                                                 RETURNING *`)
                 res.status(200).json(medicine.rows[0]);
             } else {
                 res.status(400).json({ error: "Bad request" });

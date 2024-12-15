@@ -2,7 +2,7 @@ const Router = require('express')
 const router = new Router();
 const producerController = require('../controllers/producer.controller');
 
-router.post('/producers', producerController.createProducer)
+router.post('/producers/create', producerController.createProducer)
 router.get('/producers', producerController.getProducers)
 router.get('/producers/:id', producerController.getOneProducer)
 router.put('/producers/:id', producerController.updateProducer)

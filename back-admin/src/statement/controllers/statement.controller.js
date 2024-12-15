@@ -31,7 +31,7 @@ class StatementController {
                                   WHERE ($1::text IS NULL OR number ILIKE $1) 
                                   AND ($2::date IS NULL OR receipt_date::date = $2::date)
                                   AND ($3::int IS NULL OR supplier_id = $3) 
-                                  AND ($5::decimal IS NULL OR total_sum = $5)
+                                  AND ($4::decimal IS NULL OR total_sum = $4)
         `;
 
         const { number, receipt_date, supplier_id, total_sum } = req.body ?? {};

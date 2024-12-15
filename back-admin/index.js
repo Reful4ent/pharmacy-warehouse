@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors')
 const PORT = process.env.REST_PORT || 8080;
+
 
 const countryRouter = require('./src/country/routes/country.routes');
 const bankRouter = require('./src/bank/routes/bank.routes');
@@ -22,6 +24,8 @@ const medicineCategoryRouter = require('./src/medicine_category/routes/medicine_
 const medicinePackageRouter = require('./src/medicine_category/routes/medicine_category.routes');
 const medicineProducerRouter = require('./src/medicine_category/routes/medicine_category.routes');
 const menuContextRouter = require('./src/menu_context/routes/menu_context.routes');
+const usersContextRouter = require('./src/users/routes/users.routes');
+const usersPermissionsContextRouter = require('./src/users_permissions/routes/users_permissions.routes');
 
 const routes = [
     countryRouter,
@@ -44,9 +48,17 @@ const routes = [
     medicinePackageRouter,
     medicineProducerRouter,
     menuContextRouter,
+    usersContextRouter,
+    usersPermissionsContextRouter,
 ];
 
 const app = express();
+
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 app.use(express.json());
 app.use('/api', routes);

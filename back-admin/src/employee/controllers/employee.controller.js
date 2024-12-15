@@ -3,12 +3,11 @@ const db = require("../../../db");
 class EmployeeController {
     async createEmployee(req, res) {
         const dataFromRequest = req.body ?? {};
-
         try {
             if ( dataFromRequest.surname && dataFromRequest.post_id) {
                 const newEmployee = await db.query(`INSERT INTO employee (surname, post_id) 
-                                                      VALUES ('${dataFromRequest.surname}', 
-                                                               ${dataFromRequest.post_id}) 
+                                                    VALUES ('${dataFromRequest.surname}', 
+                                                             ${dataFromRequest.post_id}) 
                                                     RETURNING *`)
                 res.status(201).json(newEmployee.rows[0]);
             } else {
@@ -77,7 +76,6 @@ class EmployeeController {
 
     async deleteEmployee(req, res) {
         const id = req.params.id;
-
         try {
             const employee = await db.query(`DELETE FROM employee WHERE id = ${id}`);
         } catch (error) {

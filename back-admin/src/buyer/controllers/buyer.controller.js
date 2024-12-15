@@ -71,6 +71,7 @@ class BuyerController {
 
         const dataFromRequest = req.body ?? {};
 
+        console.log(dataFromRequest);
         try {
             if(dataFromRequest.name &&
                 dataFromRequest.bank_id &&
@@ -85,7 +86,7 @@ class BuyerController {
                                                      phone_number='${dataFromRequest.phone_number}', 
                                                      tin='${dataFromRequest.tin}'
                                                  WHERE id=${id} 
-                                                 RETURNING *'`)
+                                                 RETURNING *`)
                 res.status(200).json(buyer.rows[0]);
             } else {
                 res.status(400).json({ error: "Bad request" });

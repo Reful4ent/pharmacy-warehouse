@@ -3,7 +3,6 @@ const db = require('../../../db');
 class StreetController {
     async createStreet(req, res) {
         const dataFromRequest = req.body ?? {};
-
         try {
             if (dataFromRequest.name) {
                 const newStreet = await db.query(`INSERT INTO street (name) VALUES ('${dataFromRequest.name}') RETURNING *`);

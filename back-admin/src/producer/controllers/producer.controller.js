@@ -67,7 +67,7 @@ class ProducerController {
                                                    SET name='${dataFromRequest.name}', 
                                                        country_id=${dataFromRequest.country_id} 
                                                  WHERE id=${id} 
-                                                 RETURNING *'`)
+                                                 RETURNING *`)
                 res.status(200).json(producer.rows[0]);
             } else {
                 res.status(400).json({ error: "Bad request" });
