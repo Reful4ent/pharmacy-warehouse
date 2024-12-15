@@ -86,6 +86,7 @@ class UsersController {
 
         try {
             const users = await db.query(`DELETE FROM users WHERE id=${id}`)
+            res.status(200).json(users.rows[0]);
         } catch (error) {
             res.status(500).json({error: error.message})
         }

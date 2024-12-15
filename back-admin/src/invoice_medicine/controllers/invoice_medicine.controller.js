@@ -60,8 +60,21 @@ class InvoiceMedicineController {
         const id = req.params.id
 
         try {
-            const invoiceMedicine = await db.query(`SELECT * FROM invoice_medicine WHERE id=${id}`);
-            res.status(200).json(invoiceMedicine.rows[0]);
+            const invoiceMedicine = await db.query(`SELECT
+                                                          medicine.id,
+                                                          medicine.name,
+                                                          medicine.production_date,
+                                                          medicine.registration_num,
+                                                          medicine.expiration_date,
+                                                          invoice_medicine.price_that_time,
+                                                          invoice_medicine.quantity
+                                                     FROM
+                                                          invoice_medicine
+                                                     JOIN
+                                                          medicine ON invoice_medicine.medicine_id = medicine.id
+                                                     WHERE
+                                                          invoice_medicine.invoice_id = ${id}`);
+            res.status(200).json(invoiceMedicine.rows);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
@@ -100,6 +113,7 @@ class InvoiceMedicineController {
 
         try {
             const invoiceMedicine = await db.query(`DELETE FROM invoice_medicine WHERE id = ${id}`);
+            res.status(200).json(invoiceMedicine.rows[0]);
         } catch (error) {
             res.status(500).json({error: error.message})
         }
