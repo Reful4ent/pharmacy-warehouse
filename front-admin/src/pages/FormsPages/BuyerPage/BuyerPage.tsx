@@ -1,16 +1,19 @@
 import {FC, useCallback, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {deleteBuyer, /*getBuyers,*/ sendCustomRequest} from "../../../shared/api";
-import {Button, Card, ConfigProvider, Modal, Space, Table} from "antd";
+import {deleteBuyer, getBuyers} from "../../../shared/api";
+import {Button, Card, ConfigProvider, Input, Modal, Space, Table} from "antd";
 import Column from "antd/es/table/Column";
 import "./BuyerPage.scss"
 import {useConfig} from "../../../app/context/ConfigProvider/context.ts";
+import {SearchOutlined} from "@ant-design/icons";
 
 export type Buyer = {
     id?: number;
     name: string;
-    bank_id: number;
-    street_id: number;
+    bank_id?: number;
+    bank_name?: string;
+    street_id?: number;
+    street_name?: string;
     phone_number: string;
     tin: string;
 }
@@ -19,32 +22,28 @@ export type Buyer = {
 
 export const BuyerPage: FC = () => {
     const config = useConfig()
-    const [dataSource, setDataSource] = useState<Buyer[]>([]);
     const navigate = useNavigate();
     const permissions = config?.permissions?.filter((permission) => permission.function == '/buyers') ?? [];
+
+    const [dataSource, setDataSource] = useState<Buyer[]>([]);
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [selectedId, setSelectedId] = useState<number>(0)
+    const [nameFilter, setNameFilter] = useState<string>('')
+    const [bankFilter, setBankFilter] = useState<string>('')
+    const [streetFilter, setStreetFilter] = useState<string>('')
+    const [phoneNumberFilter, setPhoneNumberFilter] = useState<string>('')
+    const [tinFilter, setTinFilter] = useState<string>('')
 
 
     const getBuyersForTable = useCallback(async () => {
-        //const medicines = await getBuyers();
-        //setDataSource(medicines)
-        const result = await sendCustomRequest(`
-                    SELECT 
-                        buyer.id,
-                        buyer.name,
-                        buyer.phone_number,
-                        buyer.tin,
-                        bank.name AS bank_name,
-                        street.name AS street_name
-                    FROM 
-                        buyer
-                    JOIN 
-                        bank ON buyer.bank_id = bank.id
-                    JOIN
-                        street ON buyer.street_id = street.id`
-        )
-        setDataSource(result?.dataSource)
+        const result = await getBuyers()
+        setDataSource(result)
+    },[])
+
+    const handleSearch = useCallback(async (name: string, bank: string, street: string, phoneNumber: string, tin: string) => {
+        const buyer: Buyer = {name: name, bank_name: bank, street_name: street, phone_number: phoneNumber, tin: tin}
+        const result = await getBuyers(buyer);
+        setDataSource(result)
     },[])
 
     const handleDelete = useCallback( (id: number) => {
@@ -53,8 +52,12 @@ export const BuyerPage: FC = () => {
     },[])
 
     useEffect(() => {
+        handleSearch(nameFilter, bankFilter, streetFilter, phoneNumberFilter, tinFilter)
+    }, [handleSearch, nameFilter, bankFilter, streetFilter, phoneNumberFilter, tinFilter]);
+
+    useEffect(() => {
         getBuyersForTable()
-    }, [dataSource]);
+    }, [getBuyersForTable]);
 
     return (
         <>
@@ -80,16 +83,57 @@ export const BuyerPage: FC = () => {
                               }
                         >
                             <Table dataSource={dataSource} bordered>
-                                <Column title="ID" dataIndex="id" key="id"/>
-                                <Column title="Название" dataIndex="name" key='name'/>
-                                <Column title="Банк" dataIndex="bank_name" key="bank_name"/>
-                                <Column title="Улицы" dataIndex="street_name" key="street_name"/>
-                                <Column title="Номер телефона" dataIndex="phone_number" key="phone_number"/>
-                                <Column title="ИНН" dataIndex="tin" key="tin"/>
+                                <Column title="ID" dataIndex="id" key="id" width="3%"/>
+                                <Column
+                                    title="Название"
+                                    dataIndex="name"
+                                    key='name'
+                                    filterIcon={(filtered) => <SearchOutlined style={{ color: filtered ? '#1668dc' : undefined }} />}
+                                    filterDropdown={() => (
+                                        <Input.Search onChange={(e) => setNameFilter(e.target.value)}/>
+                                    )}
+                                />
+                                <Column
+                                    title="Банк"
+                                    dataIndex="bank_name"
+                                    key="bank_name"
+                                    filterIcon={(filtered) => <SearchOutlined style={{ color: filtered ? '#1668dc' : undefined }} />}
+                                    filterDropdown={() => (
+                                        <Input.Search onChange={(e) => setBankFilter(e.target.value)}/>
+                                    )}
+                                />
+                                <Column
+                                    title="Улицы"
+                                    dataIndex="street_name"
+                                    key="street_name"
+                                    filterIcon={(filtered) => <SearchOutlined style={{ color: filtered ? '#1668dc' : undefined }} />}
+                                    filterDropdown={() => (
+                                        <Input.Search onChange={(e) => setStreetFilter(e.target.value)}/>
+                                    )}
+                                />
+                                <Column
+                                    title="Номер телефона"
+                                    dataIndex="phone_number"
+                                    key="phone_number"
+                                    filterIcon={(filtered) => <SearchOutlined style={{ color: filtered ? '#1668dc' : undefined }} />}
+                                    filterDropdown={() => (
+                                        <Input.Search onChange={(e) => setPhoneNumberFilter(e.target.value)}/>
+                                    )}
+                                />
+                                <Column
+                                    title="ИНН"
+                                    dataIndex="tin"
+                                    key="tin"
+                                    filterIcon={(filtered) => <SearchOutlined style={{ color: filtered ? '#1668dc' : undefined }} />}
+                                    filterDropdown={() => (
+                                        <Input.Search onChange={(e) => setTinFilter(e.target.value)}/>
+                                    )}
+                                />
                                 {(permissions[0].delete_permission || permissions[0].edit_permission) &&
                                     <Column
                                         title="Действия"
                                         key="action"
+                                        width="10%"
                                         render={(_: any, record) => (
                                             <Space size={"middle"}>
                                                 {permissions[0].edit_permission &&

@@ -1,10 +1,11 @@
 import {FC, useCallback, useEffect, useState} from "react";
-import {Button, Card, ConfigProvider, Modal, Space, Table} from "antd";
-import { deleteCategory, getCategories} from "../../../shared/api";
+import {Button, Card, ConfigProvider, Input, Modal, Space, Table} from "antd";
+import {deleteCategory, getCategories} from "../../../shared/api";
 import Column from "antd/es/table/Column";
 import {useNavigate} from "react-router-dom";
 import './CategoryPage.scss'
 import {useConfig} from "../../../app/context/ConfigProvider/context.ts";
+import {SearchOutlined} from "@ant-design/icons";
 
 export type Category = {
     id: number,
@@ -24,6 +25,11 @@ export const CategoryPage: FC = () => {
         setDataSource(categories)
     },[])
 
+    const handleCategoriesSearch = useCallback(async (category: string) => {
+        const categories = await getCategories(category);
+        setDataSource(categories)
+    },[])
+
     const handleDelete = useCallback( (id: number) => {
         setSelectedId(id);
         setIsOpen(true)
@@ -31,7 +37,7 @@ export const CategoryPage: FC = () => {
 
     useEffect(() => {
         getCategoriesForTable()
-    }, [dataSource]);
+    }, [getCategoriesForTable]);
 
     return (
         <>
@@ -57,12 +63,21 @@ export const CategoryPage: FC = () => {
                               }
                         >
                             <Table dataSource={dataSource} bordered>
-                                <Column title="ID" dataIndex="id" key="id"/>
-                                <Column title="Название" dataIndex="name" key='name'/>
+                                <Column title="ID" dataIndex="id" key="id" width="3%"/>
+                                <Column
+                                    title="Название"
+                                    dataIndex="name"
+                                    key='name'
+                                    filterIcon={(filtered) => <SearchOutlined style={{ color: filtered ? '#1668dc' : undefined }} />}
+                                    filterDropdown={() => (
+                                        <Input.Search onChange={(e) => handleCategoriesSearch(e.target.value)}/>
+                                    )}
+                                />
                                 {(permissions[0].delete_permission || permissions[0].edit_permission) &&
                                     <Column
                                         title="Действия"
                                         key="action"
+                                        width="10%"
                                         render={(_: any, record) => (
                                             <Space size={"middle"}>
                                                 {permissions[0].edit_permission &&

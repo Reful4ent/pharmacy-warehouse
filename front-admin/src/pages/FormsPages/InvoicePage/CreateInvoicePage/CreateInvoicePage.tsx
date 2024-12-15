@@ -21,8 +21,7 @@ export const CreateInvoicePage: FC = () => {
 
     const handleCreate = useCallback(async () => {
         const invoice = form.getFieldsValue()
-        const productionFormatedDate = dayjs(invoice.discharge_date.$d).format('YYYY-MM-DD')
-        invoice.discharge_date = productionFormatedDate;
+        invoice.discharge_date = dayjs(invoice.discharge_date.$d).format('YYYY-MM-DD')
 
         const medicines = invoice?.medicines?.map((medicine: any) => (
             {
@@ -43,14 +42,11 @@ export const CreateInvoicePage: FC = () => {
         }, []);
 
         const result = await createInvoice({
-            id: null,
             number: invoice.number,
             discharge_date: invoice.discharge_date,
             employee_id: invoice.employee_surname,
             buyer_id: invoice.buyer_name,
             total_sum: invoice.total_sum,
-            employee_surname: null,
-            buyer_name: null,
         }, aggregatedMedicines)
 
         if(result) {

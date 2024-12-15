@@ -1,10 +1,11 @@
 import {FC, useCallback, useEffect, useState} from "react";
-import {Button, Card, ConfigProvider, Modal, Space, Table} from "antd";
+import {Button, Card, ConfigProvider, Input, Modal, Space, Table} from "antd";
 import {deleteCountry, getCountries} from "../../../shared/api";
 import Column from "antd/es/table/Column";
 import {useNavigate} from "react-router-dom";
 import './CountryPage.scss'
 import {useConfig} from "../../../app/context/ConfigProvider/context.ts";
+import {SearchOutlined} from "@ant-design/icons";
 
 export type Country = {
     id: number,
@@ -20,8 +21,13 @@ export const CountryPage: FC = () => {
     const [selectedId, setSelectedId] = useState<number>(0)
 
     const getCountriesForTable = useCallback(async () => {
-        const streets = await getCountries();
-        setDataSource(streets)
+        const countries = await getCountries();
+        setDataSource(countries)
+    },[])
+
+    const handleCountriesSearch = useCallback(async (country: string) => {
+        const countries = await getCountries(country);
+        setDataSource(countries)
     },[])
 
     const handleDelete = useCallback( (id: number) => {
@@ -31,7 +37,7 @@ export const CountryPage: FC = () => {
 
     useEffect(() => {
         getCountriesForTable()
-    }, [dataSource]);
+    }, [getCountriesForTable]);
 
     return (
         <>
@@ -57,12 +63,21 @@ export const CountryPage: FC = () => {
                               }
                         >
                             <Table dataSource={dataSource} bordered>
-                                <Column title="ID" dataIndex="id" key="id"/>
-                                <Column title="Название" dataIndex="name" key='name'/>
+                                <Column title="ID" dataIndex="id" key="id" width="3%"/>
+                                <Column
+                                    title="Название"
+                                    dataIndex="name"
+                                    key='name'
+                                    filterIcon={(filtered) => <SearchOutlined style={{ color: filtered ? '#1668dc' : undefined }} />}
+                                    filterDropdown={() => (
+                                        <Input.Search onChange={(e) => handleCountriesSearch(e.target.value)}/>
+                                    )}
+                                />
                                 {(permissions[0].delete_permission || permissions[0].edit_permission) &&
                                     <Column
                                         title="Действия"
                                         key="action"
+                                        width="10%"
                                         render={(_: any, record) => (
                                             <Space size={"middle"}>
                                                 {permissions[0].edit_permission &&

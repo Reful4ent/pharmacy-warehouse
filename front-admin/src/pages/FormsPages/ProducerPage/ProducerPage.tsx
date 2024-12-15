@@ -1,18 +1,19 @@
 import {FC, useCallback, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {deleteProducer, /*getProducers, */ sendCustomRequest} from "../../../shared/api";
-import {Button, Card, ConfigProvider, Modal, Space, Table} from "antd";
+import {deleteProducer, getProducers} from "../../../shared/api";
+import {Button, Card, ConfigProvider, Input, Modal, Space, Table} from "antd";
 import Column from "antd/es/table/Column";
 import "./ProducerPage.scss"
 import {useConfig} from "../../../app/context/ConfigProvider/context.ts";
+import {SearchOutlined} from "@ant-design/icons";
+
 
 export type Producer = {
-    id: number;
+    id?: number;
     name: string;
-    country_id: number;
+    country_id?: number;
+    country_name?: string;
 }
-
-
 
 export const ProducerPage: FC = () => {
     const [dataSource, setDataSource] = useState<Producer[]>([]);
@@ -21,20 +22,18 @@ export const ProducerPage: FC = () => {
     const permissions = config?.permissions?.filter((permission) => permission.function == '/producers') ?? [];
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [selectedId, setSelectedId] = useState<number>(0)
+    const [nameFilter, setNameFilter] = useState<string>('')
+    const [countryFilter, setCountryFilter] = useState<string>('')
 
     const getProducersForTable = useCallback(async () => {
-        //const employees = await getProducers();
-        //setDataSource(employees)
-        const result = await sendCustomRequest(`
-                    SELECT 
-                        producer.id,
-                        producer.name,
-                        country.name AS country_name
-                    FROM 
-                        producer
-                    JOIN 
-                        country ON producer.country_id = country.id`)
-        setDataSource(result?.dataSource)
+        const result = await getProducers()
+        setDataSource(result)
+    },[])
+
+    const handleSearch = useCallback(async (name: string, country_name: string) => {
+        const producer: Producer = {name: name, country_name: country_name}
+        const result = await getProducers(producer);
+        setDataSource(result)
     },[])
 
     const handleDelete = useCallback( (id: number) => {
@@ -43,8 +42,12 @@ export const ProducerPage: FC = () => {
     },[])
 
     useEffect(() => {
+        handleSearch(nameFilter,countryFilter)
+    }, [handleSearch, nameFilter, countryFilter]);
+
+    useEffect(() => {
         getProducersForTable()
-    }, [dataSource]);
+    }, [getProducersForTable]);
 
     return (
         <>
@@ -70,13 +73,30 @@ export const ProducerPage: FC = () => {
                               }
                         >
                             <Table dataSource={dataSource} bordered>
-                                <Column title="ID" dataIndex="id" key="id"/>
-                                <Column title="Название" dataIndex="name" key='name'/>
-                                <Column title="Страна производителя" dataIndex="country_name" key="country_name"/>
+                                <Column title="ID" dataIndex="id" key="id" width="3%"/>
+                                <Column
+                                    title="Название"
+                                    dataIndex="name"
+                                    key='name'
+                                    filterIcon={(filtered) => <SearchOutlined style={{ color: filtered ? '#1668dc' : undefined }} />}
+                                    filterDropdown={() => (
+                                        <Input.Search onChange={(e) => setNameFilter(e.target.value)}/>
+                                    )}
+                                />
+                                <Column
+                                    title="Страна производителя"
+                                    dataIndex="country_name"
+                                    key="country_name"
+                                    filterIcon={(filtered) => <SearchOutlined style={{ color: filtered ? '#1668dc' : undefined }} />}
+                                    filterDropdown={() => (
+                                        <Input.Search onChange={(e) => setCountryFilter(e.target.value)}/>
+                                    )}
+                                />
                                 {(permissions[0].delete_permission || permissions[0].edit_permission) &&
                                     <Column
                                         title="Действия"
                                         key="action"
+                                        width="10%"
                                         render={(_: any, record) => (
                                             <Space size={"middle"}>
                                                 {permissions[0].edit_permission &&

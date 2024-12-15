@@ -23,8 +23,7 @@ export const CreateStatementPage: FC = () => {
 
     const handleCreate = useCallback(async () => {
         const statements = form.getFieldsValue()
-        const receiptFormatedDate = dayjs(statements.receipt_date.$d).format('YYYY-MM-DD')
-        statements.receipt_date = receiptFormatedDate;
+        statements.receipt_date = dayjs(statements.receipt_date.$d).format('YYYY-MM-DD')
 
         const medicines = statements?.medicines?.map((medicine: any) => (
             {
@@ -45,12 +44,10 @@ export const CreateStatementPage: FC = () => {
         }, []);
 
         const result = await createStatement({
-            id: null,
             number: statements.number,
             receipt_date: statements.receipt_date,
             supplier_id: statements.supplier_id,
             total_sum: statements.total_sum,
-            supplier_name: null,
         }, aggregatedMedicines)
 
         if(result) {

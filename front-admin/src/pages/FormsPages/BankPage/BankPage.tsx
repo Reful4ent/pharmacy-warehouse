@@ -1,10 +1,11 @@
 import {FC, useCallback, useEffect, useState} from "react";
-import {Button, Card, ConfigProvider, Modal, Space, Table} from "antd";
+import {Button, Card, ConfigProvider, Input, Modal, Space, Table} from "antd";
 import {deleteBank, getBanks} from "../../../shared/api";
 import Column from "antd/es/table/Column";
 import {useNavigate} from "react-router-dom";
 import './BankPage.scss'
 import {useConfig} from "../../../app/context/ConfigProvider/context.ts";
+import {SearchOutlined} from "@ant-design/icons";
 
 export type Bank = {
     id: number,
@@ -24,6 +25,11 @@ export const BankPage: FC = () => {
         setDataSource(banks)
     },[])
 
+    const handleBankSearch = useCallback(async (bank: string) => {
+        const banks = await getBanks(bank);
+        setDataSource(banks)
+    },[])
+
     const handleDelete = useCallback( (id: number) => {
         setSelectedId(id);
         setIsOpen(true)
@@ -31,7 +37,7 @@ export const BankPage: FC = () => {
 
     useEffect(() => {
         getBanksForTable()
-    }, [dataSource]);
+    }, [getBanksForTable]);
 
     return (
         <>
@@ -57,12 +63,21 @@ export const BankPage: FC = () => {
                               }
                         >
                             <Table dataSource={dataSource} bordered>
-                                <Column title="ID" dataIndex="id" key="id"/>
-                                <Column title="Название" dataIndex="name" key='name'/>
+                                <Column title="ID" dataIndex="id" key="id" width="3%"/>
+                                <Column
+                                    title="Название"
+                                    dataIndex="name"
+                                    key='name'
+                                    filterIcon={(filtered) => <SearchOutlined style={{ color: filtered ? '#1668dc' : undefined }} />}
+                                    filterDropdown={() => (
+                                        <Input.Search onChange={(e) => handleBankSearch(e.target.value)}/>
+                                    )}
+                                />
                                 {(permissions[0].delete_permission || permissions[0].edit_permission) &&
                                     <Column
                                         title="Действия"
                                         key="action"
+                                        width="10%"
                                         render={(_: any, record) => (
                                             <Space size={"middle"}>
                                                 {permissions[0].edit_permission &&

@@ -191,10 +191,13 @@ export const sendCustomRequest = async (request: string) => {
     }
 }
 
-export const getStreets = async () => {
+export const getStreets = async (street?: string | null) => {
     try {
-        const response = await axios.get(
+        const response = await axios.post(
             urlRoute + '/streets',
+            {
+                name: street,
+            }
         )
         return response.data
     } catch (error: any) {
@@ -274,10 +277,13 @@ export const updateStreet = async (street: Street) => {
 }
 
 
-export const getPosts = async () => {
+export const getPosts = async (post?: string | null) => {
     try {
-        const response = await axios.get(
+        const response = await axios.post(
             urlRoute + '/posts',
+            {
+                name: post
+            }
         )
         return response.data
     } catch (error: any) {
@@ -356,10 +362,13 @@ export const getPost = async (id: number) => {
 
 
 
-export const getBanks = async () => {
+export const getBanks = async (bank?: string | null) => {
     try {
-        const response = await axios.get(
+        const response = await axios.post(
             urlRoute + '/banks',
+            {
+                name: bank
+            }
         )
         return response.data
     } catch (error: any) {
@@ -438,10 +447,13 @@ export const getBank = async (id: number) => {
 
 
 
-export const getCountries = async () => {
+export const getCountries = async (country?: string | null) => {
     try {
-        const response = await axios.get(
+        const response = await axios.post(
             urlRoute + '/countries',
+            {
+                name: country
+            }
         )
         return response.data
     } catch (error: any) {
@@ -522,10 +534,13 @@ export const getCountry = async (id: number) => {
     }
 }
 
-export const getCategories = async () => {
+export const getCategories = async (category?: string | null) => {
     try {
-        const response = await axios.get(
+        const response = await axios.post(
             urlRoute + '/categories',
+            {
+                name: category
+            }
         )
         return response.data
     } catch (error: any) {
@@ -603,10 +618,13 @@ export const getCategory = async (id: number) => {
 }
 
 
-export const getPackages = async () => {
+export const getPackages = async (package_?:string | null) => {
     try {
-        const response = await axios.get(
+        const response = await axios.post(
             urlRoute + '/packages',
+            {
+                name: package_
+            }
         )
         return response.data
     } catch (error: any) {
@@ -855,10 +873,13 @@ export const updateMedicine = async (medicine: Medicine) => {
 }
 
 
-export const getEmployees = async () => {
+export const getEmployees = async (employee?: Employee | null) => {
     try {
-        const response = await axios.get(
-            urlRoute + '/employees',
+        const response = await axios.post(
+            urlRoute + '/employees',{
+                surname: employee?.surname,
+                post_name: employee?.post_name
+            }
         )
         return response.data
     } catch (error: any) {
@@ -941,10 +962,17 @@ export const updateEmployee = async (employee: Employee) => {
 
 
 
-export const getBuyers = async () => {
+export const getBuyers = async (buyer?: Buyer) => {
     try {
-        const response = await axios.get(
+        const response = await axios.post(
             urlRoute + '/buyers',
+            {
+                name: buyer?.name,
+                bank_name: buyer?.bank_name,
+                street_name: buyer?.street_name,
+                phone_number: buyer?.phone_number,
+                tin: buyer?.tin,
+            }
         )
         return response.data
     } catch (error: any) {
@@ -1030,10 +1058,14 @@ export const updateBuyer = async (buyer: Buyer) => {
 }
 
 
-export const getProducers = async () => {
+export const getProducers = async (producer?: Producer) => {
     try {
-        const response = await axios.get(
+        const response = await axios.post(
             urlRoute + '/producers',
+            {
+                name: producer?.name,
+                country_name: producer?.country_name
+            }
         )
         return response.data
     } catch (error: any) {
@@ -1113,10 +1145,18 @@ export const createProducer = async (producer: Producer) => {
 }
 
 
-export const getSuppliers = async () => {
+export const getSuppliers = async (supplier?: Supplier) => {
     try {
-        const response = await axios.get(
+        const response = await axios.post(
             urlRoute + '/suppliers',
+            {
+                name: supplier?.name,
+                bank_name: supplier?.bank_name,
+                street_name: supplier?.street_name,
+                phone_number: supplier?.phone_number,
+                current_account: supplier?.current_account,
+                tin: supplier?.tin,
+            }
         )
         return response.data
     } catch (error: any) {
@@ -1204,10 +1244,15 @@ export const getSupplier = async (id: number) => {
 }
 
 
-export const getInvoices = async () => {
+export const getInvoices = async (invoice?: Invoice) => {
     try {
-        const response = await axios.get(
+        const response = await axios.post(
             urlRoute + '/invoices',
+            {
+                number_of_invoice: invoice?.number,
+                employee_surname: invoice?.employee_surname,
+                buyer_name: invoice?.buyer_name
+            }
         )
         console.log(response.data)
         return response.data

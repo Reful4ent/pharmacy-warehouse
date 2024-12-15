@@ -1,10 +1,11 @@
 import {FC, useCallback, useEffect, useState} from "react";
-import {Button, Card, ConfigProvider, Modal, Space, Table} from "antd";
+import {Button, Card, ConfigProvider, Input, Modal, Space, Table} from "antd";
 import { deleteStreet, getStreets} from "../../../shared/api";
-import Column from "antd/es/table/Column";
 import {useNavigate} from "react-router-dom";
-import './StreetPage.scss'
 import {useConfig} from "../../../app/context/ConfigProvider/context.ts";
+import {SearchOutlined} from "@ant-design/icons";
+import Column from "antd/es/table/Column";
+import './StreetPage.scss'
 
 export type Street = {
     id: number,
@@ -12,16 +13,21 @@ export type Street = {
 }
 
 export const StreetPage: FC = () => {
-    const [dataSource, setDataSource] = useState<Street[]>([]);
     const navigate = useNavigate();
     const config = useConfig()
     const permissions = config?.permissions?.filter((permission) => permission.function == '/streets') ?? [];
+    const [dataSource, setDataSource] = useState<Street[]>([]);
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [selectedId, setSelectedId] = useState<number>(0)
 
 
     const getStreetsForTable = useCallback(async () => {
         const streets = await getStreets();
+        setDataSource(streets)
+    },[])
+
+    const handleStreetsSearch = useCallback(async (street: string) => {
+        const streets = await getStreets(street);
         setDataSource(streets)
     },[])
 
@@ -32,7 +38,7 @@ export const StreetPage: FC = () => {
 
     useEffect(() => {
         getStreetsForTable()
-    }, [dataSource]);
+    }, [getStreetsForTable]);
 
     return (
         <>
@@ -58,12 +64,21 @@ export const StreetPage: FC = () => {
                               }
                         >
                             <Table dataSource={dataSource} bordered>
-                                <Column title="ID" dataIndex="id" key="id"/>
-                                <Column title="Название" dataIndex="name" key='name'/>
+                                <Column title="ID" dataIndex="id" key="id" width="3%"/>
+                                <Column
+                                    title="Название"
+                                    dataIndex="name"
+                                    key='name'
+                                    filterIcon={(filtered) => <SearchOutlined style={{ color: filtered ? '#1668dc' : undefined }} />}
+                                    filterDropdown={() => (
+                                        <Input.Search onChange={(e) => handleStreetsSearch(e.target.value)}/>
+                                    )}
+                                />
                                 {(permissions[0].delete_permission || permissions[0].edit_permission) &&
                                     <Column
                                         title="Действия"
                                         key="action"
+                                        width="10%"
                                         render={(_: any, record) => (
                                             <Space size={"middle"}>
                                                 {permissions[0].edit_permission &&

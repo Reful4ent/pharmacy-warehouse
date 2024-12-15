@@ -50,7 +50,6 @@ export const EditStatementPage: FC = () => {
             receipt_date: statements.receipt_date,
             supplier_id: statements.supplier_id,
             total_sum: statements.total_sum,
-            supplier_name: null,
         }, aggregatedMedicines)
 
         if(result) {

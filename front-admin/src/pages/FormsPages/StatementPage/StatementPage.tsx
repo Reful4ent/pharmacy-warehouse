@@ -7,12 +7,12 @@ import "./StatementPage.scss"
 import {useConfig} from "../../../app/context/ConfigProvider/context.ts";
 
 export type Statement = {
-    id: number | null | undefined,
+    id?: number,
     number: string,
     receipt_date: string,
     total_sum: number,
-    supplier_id: number | null | undefined,
-    supplier_name: string | null | undefined,
+    supplier_id?: number | null | undefined,
+    supplier_name?: string | null | undefined,
 }
 
 
@@ -22,6 +22,7 @@ export const StatementPage: FC = () => {
     const navigate = useNavigate();
     const config = useConfig()
     const permissions = config?.permissions?.filter((permission) => permission.function == '/statements') ?? [];
+
 
     const getStatementsForTable = useCallback(async () => {
         const statements = await getStatements();

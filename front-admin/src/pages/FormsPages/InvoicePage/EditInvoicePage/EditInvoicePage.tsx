@@ -54,8 +54,6 @@ export const EditInvoicePage: FC = () => {
             employee_id: invoice.employee_id,
             buyer_id: invoice.buyer_id,
             total_sum: invoice.total_sum,
-            employee_surname: null,
-            buyer_name: null,
         }, aggregatedMedicines)
 
         if(result) {
