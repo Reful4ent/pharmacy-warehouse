@@ -703,10 +703,14 @@ export const getPackage = async (id: number) => {
 }
 
 
-export const getMedicines = async () => {
+export const getMedicines = async (medicine?: Medicine) => {
     try {
-        const response = await axios.get(
+        const response = await axios.post(
             urlRoute + '/medicines',
+            {
+                name: medicine?.name,
+                registration_num: medicine?.registration_num,
+            }
         )
         return response.data
     } catch (error: any) {
@@ -1380,10 +1384,14 @@ export const updateInvoice = async (invoice: Invoice, medicines: MedicineToInvoi
     }
 }
 
-export const getStatements = async () => {
+export const getStatements = async (statement?: Statement) => {
     try {
-        const response = await axios.get(
+        const response = await axios.post(
             urlRoute + '/statements',
+            {
+                number_of_statement: statement?.number,
+                supplier_name: statement?.supplier_name,
+            }
         )
         return response.data
     } catch (error: any) {

@@ -27,14 +27,12 @@ export const CreateMedicinePage: FC = () => {
     const handleCreate = useCallback(async () => {
         setDateError(false)
         const medicine = form.getFieldsValue()
-        const productionFormatedDate = dayjs(medicine.production_date.$d).format('YYYY-MM-DD')
-        const expirationFormatedDate = dayjs(medicine.expiration_date.$d).format('YYYY-MM-DD')
-        if(new Date(productionFormatedDate) > new Date(expirationFormatedDate)) {
+        medicine.production_date = dayjs(medicine.production_date.$d).format('YYYY-MM-DD')
+        medicine.expiration_date = dayjs(medicine.expiration_date.$d).format('YYYY-MM-DD')
+        if(new Date(medicine.production_date) > new Date(medicine.expiration_date)) {
             setDateError(true)
             return
         }
-        medicine.production_date = productionFormatedDate;
-        medicine.expiration_date = expirationFormatedDate
         const result = await createMedicine(medicine)
         if(result) {
             navigate('/medicines')

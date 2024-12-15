@@ -1,16 +1,17 @@
 import {FC, useCallback, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import { deleteStatement, getStatements} from "../../../shared/api";
-import {Button, Card, ConfigProvider, Space, Table} from "antd";
+import {deleteStatement, getStatements} from "../../../shared/api";
+import {Button, Card, ConfigProvider, Input, Space, Table} from "antd";
 import Column from "antd/es/table/Column";
 import "./StatementPage.scss"
 import {useConfig} from "../../../app/context/ConfigProvider/context.ts";
+import {SearchOutlined} from "@ant-design/icons";
 
 export type Statement = {
     id?: number,
     number: string,
-    receipt_date: string,
-    total_sum: number,
+    receipt_date?: string,
+    total_sum?: number,
     supplier_id?: number | null | undefined,
     supplier_name?: string | null | undefined,
 }
@@ -22,11 +23,19 @@ export const StatementPage: FC = () => {
     const navigate = useNavigate();
     const config = useConfig()
     const permissions = config?.permissions?.filter((permission) => permission.function == '/statements') ?? [];
+    const [numberFilter, setNumberFilter] = useState<string>('')
+    const [supplierFilter, setSupplierFilter] = useState<string>('')
 
 
     const getStatementsForTable = useCallback(async () => {
         const statements = await getStatements();
         setDataSource(statements)
+    },[])
+
+    const handleSearch = useCallback(async (number: string, supplier: string) => {
+        const statement: Statement = {number: number, supplier_name: supplier}
+        const result = await getStatements(statement);
+        setDataSource(result)
     },[])
 
     const handleDelete = useCallback(async (id: number) => {
@@ -35,8 +44,12 @@ export const StatementPage: FC = () => {
     },[])
 
     useEffect(() => {
+        handleSearch(numberFilter, supplierFilter)
+    }, [handleSearch, numberFilter, numberFilter, supplierFilter]);
+
+    useEffect(() => {
         getStatementsForTable()
-    }, [dataSource]);
+    }, [getStatementsForTable]);
 
     return (
         <>
@@ -63,10 +76,35 @@ export const StatementPage: FC = () => {
                         >
                             <Table dataSource={dataSource} bordered>
                                 <Column title="ID" dataIndex="id" key="id"/>
-                                <Column title="Номер" dataIndex="number" key='number'/>
-                                <Column title="Дата поступления" dataIndex="receipt_date" key="receipt_date" render={date => date.split('T')[0]}/>
-                                <Column title="Поставщик" dataIndex="supplier_name" key="supplier_name"/>
-                                <Column title="Сумма" dataIndex="total_sum" key="total_sum"/>
+                                <Column
+                                    title="Номер"
+                                    dataIndex="number"
+                                    key='number'
+                                    filterIcon={(filtered) => <SearchOutlined style={{ color: filtered ? '#1668dc' : undefined }} />}
+                                    filterDropdown={() => (
+                                        <Input.Search onChange={(e) => setNumberFilter(e.target.value)}/>
+                                    )}
+                                />
+                                <Column
+                                    title="Дата поступления"
+                                    dataIndex="receipt_date"
+                                    key="receipt_date"
+                                    render={date => date.split('T')[0]}
+                                />
+                                <Column
+                                    title="Поставщик"
+                                    dataIndex="supplier_name"
+                                    key="supplier_name"
+                                    filterIcon={(filtered) => <SearchOutlined style={{ color: filtered ? '#1668dc' : undefined }} />}
+                                    filterDropdown={() => (
+                                        <Input.Search onChange={(e) => setSupplierFilter(e.target.value)}/>
+                                    )}
+                                />
+                                <Column
+                                    title="Сумма"
+                                    dataIndex="total_sum"
+                                    key="total_sum"
+                                />
                                 <Column
                                     title="Действия"
                                     key="action"

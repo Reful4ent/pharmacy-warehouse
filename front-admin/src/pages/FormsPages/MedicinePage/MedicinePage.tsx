@@ -1,21 +1,22 @@
 import {FC, useCallback, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {deleteMedicine, /*getMedicines, */sendCustomRequest} from "../../../shared/api";
-import {Button, Card, ConfigProvider, Modal, Space, Table} from "antd";
+import {deleteMedicine, getMedicines} from "../../../shared/api";
+import {Button, Card, ConfigProvider, Input, Modal, Space, Table} from "antd";
 import Column from "antd/es/table/Column";
 import "./MedicinePage.scss"
 import {useConfig} from "../../../app/context/ConfigProvider/context.ts";
+import {SearchOutlined} from "@ant-design/icons";
 
 export type Medicine = {
-    id: number,
+    id?: number,
     name: string,
-    production_date: string,
-    expiration_date: string,
+    production_date?: string,
+    expiration_date?: string,
     registration_num: string,
-    price: number;
-    category_names: number[];
-    package_name: number[];
-    producer_name: number[];
+    price?: number;
+    category_names?: number[];
+    package_name?: number[];
+    producer_name?: number[];
 }
 
 
@@ -27,43 +28,18 @@ export const MedicinePage: FC = () => {
     const permissions = config?.permissions?.filter((permission) => permission.function == '/medicines') ?? [];
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const [selectedMedicineId, setSelectedMedicineId] = useState<number>(0)
+    const [nameFilter, setNameFilter] = useState<string>('')
+    const [registrationNumFilter, setRegistrationNumFilter] = useState<string>('')
 
     const getMedicinesForTable = useCallback(async () => {
-        //const medicines = await getMedicines();
-        //setDataSource(medicines)
-        const result = await sendCustomRequest(`
-                    SELECT 
-                        medicine.id,
-                        medicine.name,
-                        medicine.production_date,
-                        medicine.expiration_date,
-                        medicine.registration_num,
-                        medicine.price,
-                        producer.name AS producer_name,
-                        STRING_AGG(DISTINCT category.name, ', ') AS category_names,
-                        package.name AS package_name,
-                        country.name AS country_name
-                    FROM 
-                        medicine
-                    LEFT JOIN 
-                        medicine_producer ON medicine.id = medicine_producer.medicine_id
-                    LEFT JOIN 
-                        producer ON medicine_producer.producer_id = producer.id
-                    LEFT JOIN 
-                        medicine_category ON medicine.id = medicine_category.medicine_id
-                    LEFT JOIN 
-                        category ON medicine_category.category_id = category.id
-                    LEFT JOIN 
-                        medicine_package ON medicine.id = medicine_package.medicine_id
-                    LEFT JOIN 
-                        package ON medicine_package.package_id = package.id
-                    LEFT JOIN 
-                        country ON producer.country_id = country.id
-                    GROUP BY 
-                        medicine.id, medicine.name, medicine.production_date, medicine.expiration_date, 
-                        medicine.registration_num, medicine.price, producer.name, package.name, country.name;
-        `)
-        setDataSource(result?.dataSource)
+        const result = await getMedicines();
+        setDataSource(result)
+    },[])
+
+    const handleSearch = useCallback(async (name: string, registrationNum: string) => {
+        const medicine: Medicine = {name: name, registration_num: registrationNum}
+        const result = await getMedicines(medicine);
+        setDataSource(result)
     },[])
 
     const handleDelete = useCallback( (id: number) => {
@@ -72,8 +48,12 @@ export const MedicinePage: FC = () => {
     },[])
 
     useEffect(() => {
+        handleSearch(nameFilter, registrationNumFilter)
+    }, [handleSearch, nameFilter, registrationNumFilter]);
+
+    useEffect(() => {
         getMedicinesForTable()
-    }, [dataSource]);
+    }, [getMedicinesForTable]);
 
     return (
         <>
@@ -99,12 +79,27 @@ export const MedicinePage: FC = () => {
                               }
                         >
                             <Table dataSource={dataSource} bordered>
-                                <Column title="ID" dataIndex="id" key="id"/>
-                                <Column title="Название" dataIndex="name" key='name'/>
+                                <Column title="ID" dataIndex="id" key="id" width="3%"/>
+                                <Column
+                                    title="Название"
+                                    dataIndex="name"
+                                    key='name'
+                                    filterIcon={(filtered) => <SearchOutlined style={{ color: filtered ? '#1668dc' : undefined }} />}
+                                    filterDropdown={() => (
+                                        <Input.Search onChange={(e) => setNameFilter(e.target.value)}/>
+                                    )}
+                                />
                                 <Column title="Дата производства" dataIndex="production_date" key="production_date" render={date => date.split('T')[0]}/>
                                 <Column title="Срок годности" dataIndex="expiration_date" key="expiration_date" render={date => date.split('T')[0]}/>
-                                <Column title="Регистрационный номер" dataIndex="registration_num"
-                                        key="registration_num"/>
+                                <Column
+                                    title="Регистрационный номер"
+                                    dataIndex="registration_num"
+                                    key="registration_num"
+                                    filterIcon={(filtered) => <SearchOutlined style={{ color: filtered ? '#1668dc' : undefined }} />}
+                                    filterDropdown={() => (
+                                        <Input.Search onChange={(e) => setRegistrationNumFilter(e.target.value)}/>
+                                    )}
+                                />
                                 <Column title="Производитель" dataIndex="producer_name" key="producer_name"/>
                                 <Column title="Упаковка" dataIndex="package_name" key="package_name"/>
                                 <Column title="Категории" dataIndex="category_names" key="category_names"/>
@@ -114,6 +109,7 @@ export const MedicinePage: FC = () => {
                                     <Column
                                         title="Действия"
                                         key="action"
+                                        width="15%"
                                         render={(_: any, record) => (
                                             <Space size={"middle"}>
                                                 {permissions[0].edit_permission &&
