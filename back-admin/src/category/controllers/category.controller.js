@@ -66,6 +66,7 @@ class CategoryController {
 
         try {
             const category = await db.query(`DELETE FROM category WHERE id=${id}`);
+            res.status(200).json(category.rows[0]);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

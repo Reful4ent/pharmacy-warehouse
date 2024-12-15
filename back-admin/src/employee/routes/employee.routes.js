@@ -3,7 +3,7 @@ const router = new Router();
 const employeeController = require('../controllers/employee.controller');
 
 router.post('/employees/create', employeeController.createEmployee)
-router.get('/employees', employeeController.getEmployees)
+router.post('/employees', employeeController.getEmployees)
 router.get('/employees/:id', employeeController.getOneEmployee)
 router.put('/employees/:id', employeeController.updateEmployee)
 router.delete('/employees/:id', employeeController.deleteEmployee)

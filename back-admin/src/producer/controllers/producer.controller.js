@@ -23,16 +23,24 @@ class ProducerController {
     }
 
     async getProducers(req, res) {
-        const requestToDB = `SELECT * FROM producer
-                                    WHERE ($1::text IS NULL OR name ILIKE $1) 
-                                    AND ($2::int IS NULL OR country_id = $2)
+        const requestToDB = `SELECT 
+                                        producer.id,
+                                        producer.name,
+                                        country_id AS country_id,
+                                        country.name AS country_name
+                                    FROM 
+                                        producer
+                                    JOIN 
+                                        country ON producer.country_id = country.id
+                                    WHERE ($1::text IS NULL OR producer.name ILIKE $1) 
+                                    AND ($2::text IS NULL OR country.name ILIKE $2)
         `;
 
-        const { name, country_id } = req.body ?? {};
+        const { name, country_name } = req.body ?? {};
 
         const values = [
             name ? `%${name}%` : null,
-            country_id,
+            country_name ? `%${country_name}%` : null,
         ]
 
         try {
@@ -82,6 +90,7 @@ class ProducerController {
 
         try {
             const producer = await db.query(`DELETE FROM producer WHERE id=${id}`);
+            res.status(200).json(supplier.rows[0]);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

@@ -65,6 +65,7 @@ class StreetController {
 
         try {
             const street = await db.query(`DELETE FROM street WHERE id=${id}`);
+            res.status(200).json(street.rows[0]);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

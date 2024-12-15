@@ -52,7 +52,13 @@ class PackageController {
 
         try {
             if (dataFromRequest.name) {
-                const onePackage = await db.query(`UPDATE package SET name='${dataFromRequest.name}' WHERE id=${id} RETURNING *`);
+                const onePackage = await db.query(`UPDATE
+                                                        package
+                                                   SET
+                                                        name='${dataFromRequest.name}' 
+                                                   WHERE
+                                                        id=${id}
+                                                   RETURNING *`);
                 res.status(200).json(onePackage.rows[0]);
             } else {
                 res.status(400).json({ error: "Bad request" });
@@ -67,6 +73,7 @@ class PackageController {
 
         try {
             const onePackage = await db.query(`DELETE FROM package WHERE id=${id}`);
+            res.status(200).json(onePackage.rows[0]);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

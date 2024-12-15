@@ -67,6 +67,7 @@ class PostController {
 
         try {
             const post = await db.query(`DELETE FROM post WHERE id=${id}`);
+            res.status(200).json(post.rows[0]);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

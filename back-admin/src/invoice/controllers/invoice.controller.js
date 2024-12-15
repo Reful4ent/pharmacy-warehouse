@@ -43,23 +43,18 @@ class InvoiceController {
                                         employee ON invoice.employee_id = employee.id
                                     JOIN
                                         buyer ON invoice.buyer_id = buyer.id
-                                    WHERE 
-                                        ($1::text IS NULL OR invoice.number ILIKE $1) 
-                                        AND ($2::date IS NULL OR invoice.discharge_date::date = $2::date)
-                                        AND ($3::text IS NULL OR employee.surname ILIKE $3) 
-                                        AND ($4::text IS NULL OR buyer.name ILIKE $4) 
-                                        AND ($5::decimal IS NULL OR invoice.total_sum = $5);
+                                    WHERE ($1::text IS NULL OR invoice.number ILIKE $1)
+                                    AND ($2::text IS NULL OR employee.surname ILIKE $2) 
+                                    AND ($3::text IS NULL OR buyer.name ILIKE $3)
 
         `;
 
-        const { number, discharge_date, employee_surname, buyer_name, total_sum } = req.body ?? {};
+        const { number_of_invoice, employee_surname, buyer_name } = req.body ?? {};
 
         const values = [
-            number ? `%${number}%` : null,
-            discharge_date,
+            number_of_invoice ? `%${number_of_invoice}%` : null,
             employee_surname ? `%${employee_surname}%` : null,
             buyer_name  ? `%${buyer_name}%` : null,
-            total_sum,
         ]
 
         try {
@@ -131,6 +126,7 @@ class InvoiceController {
 
         try {
             const invoice = await db.query(`DELETE FROM invoice WHERE id=${id}`)
+            res.status(200).json(invoice.rows[0]);
         } catch (error) {
             res.status(500).send({error: error.message})
         }

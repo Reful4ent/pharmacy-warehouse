@@ -3,7 +3,7 @@ const router = new Router();
 const postController = require('../controllers/post.controller');
 
 router.post('/posts/create', postController.createPost)
-router.get('/posts', postController.getPosts)
+router.post('/posts', postController.getPosts)
 router.get('/posts/:id', postController.getOnePost)
 router.put('/posts/:id', postController.updatePost)
 router.delete('/posts/:id', postController.deletePost)

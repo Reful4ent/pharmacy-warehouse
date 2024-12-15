@@ -30,16 +30,24 @@ class EmployeeController {
     }
 
     async getEmployees(req, res) {
-        let requestToDB = `SELECT * FROM employee
-                                  WHERE ($1::text IS NULL OR surname ILIKE $1)
-                                  AND ($2::int IS NULL OR post_id = $2)
+        let requestToDB = `SELECT 
+                                      employee.id,
+                                      employee.surname,
+                                      post.name AS post_name,
+                                      post.id AS post_id
+                                  FROM 
+                                      employee
+                                  JOIN 
+                                      post ON employee.post_id = post.id
+                                  WHERE ($1::text IS NULL OR employee.surname ILIKE $1)
+                                  AND ($2::text IS NULL OR post.name ILIKE $2)
         `;
 
-        const { surname, post_id } = req.body ?? {};
+        const { surname, post_name } = req.body ?? {};
 
         const values = [
             surname ? `%${surname}%` : null,
-            post_id,
+            post_name ? `%${post_name}%` : null,
         ]
 
         try {
@@ -78,6 +86,7 @@ class EmployeeController {
         const id = req.params.id;
         try {
             const employee = await db.query(`DELETE FROM employee WHERE id = ${id}`);
+            res.status(200).json(employee.rows[0]);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
