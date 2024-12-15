@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import {
     getBuyers,
     getEmployees,
-    getInvoice,
+    getInvoice, getInvoiceMedicine,
     getMedicines, sendCustomRequest, updateInvoice,
 } from "../../../../shared/api";
 import {Employee} from "../../EmployeePage/EmployeePage.tsx";
@@ -67,30 +67,22 @@ export const EditInvoicePage: FC = () => {
 
     const getData = useCallback(async () => {
         const invoice = await getInvoice(Number(id))
+        const responseTable = await getInvoiceMedicine(Number(id))
+
         invoice.discharge_date = dayjs(invoice.discharge_date.split('T')[0], 'YYYY-MM-DD');
-        const responseTable = await sendCustomRequest(`SELECT
-                                                                                               medicine.id,
-                                                                                                medicine.name,
-                                                                                                medicine.production_date,
-                                                                                                medicine.registration_num,
-                                                                                                medicine.expiration_date,
-                                                                                                invoice_medicine.price_that_time,
-                                                                                                invoice_medicine.quantity
-                                                                                            FROM
-                                                                                                invoice_medicine
-                                                                                            JOIN
-                                                                                                medicine ON invoice_medicine.medicine_id = medicine.id
-                                                                                            WHERE
-                                                                                                invoice_medicine.invoice_id = ${Number(id)}
-        `)
-        invoice.medicines = responseTable.dataSource.map((data) => ({medicine: data.id, medicinePriceThatTime: data.price_that_time, medicineQuantity: data.quantity}))
+        invoice.medicines = responseTable.map((data) => ({medicine: data.id, medicinePriceThatTime: data.price_that_time, medicineQuantity: data.quantity}))
         form.setFieldsValue(invoice);
+
         const employees = await getEmployees()
         const buyers = await getBuyers();
         const medicines = await getMedicines();
+
         const finallyEmployees = employees.map((employee: Employee) => ({label: employee.surname, value: employee.id}))
         const finallyBuyers = buyers.map((buyer: Buyer) => ({label: buyer.name, value:buyer.id}))
-        const finallyMedicines = medicines.map((medicine: Medicine) => ({label: medicine.name, value:medicine.id}))
+        const finallyMedicines = medicines
+            .filter((medicine, index, self) => index === self.findIndex((m) => m.name === medicine.name))
+            .map((medicine: Medicine) => ({label: medicine.name, value:medicine.id}))
+
         setBuyerOptions(finallyBuyers)
         setEmployeeOptions(finallyEmployees)
         setMedicineOptions(finallyMedicines)

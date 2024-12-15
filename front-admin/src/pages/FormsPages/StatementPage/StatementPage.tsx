@@ -75,7 +75,7 @@ export const StatementPage: FC = () => {
                               }
                         >
                             <Table dataSource={dataSource} bordered>
-                                <Column title="ID" dataIndex="id" key="id"/>
+                                <Column title="ID" dataIndex="id" key="id" width="3%" />
                                 <Column
                                     title="Номер"
                                     dataIndex="number"
@@ -108,6 +108,7 @@ export const StatementPage: FC = () => {
                                 <Column
                                     title="Действия"
                                     key="action"
+                                    width="15%"
                                     render={(_: any, record) => (
                                         <Space size={"middle"}>
                                             <Button variant="solid" color="default"

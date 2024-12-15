@@ -3,7 +3,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {Button, Card, Col, ConfigProvider, DatePicker, Form, Input, Modal, Row, Select, Typography} from "antd";
 import dayjs from "dayjs";
 import {
-    getMedicines, getStatement, getSuppliers,
+    getMedicines, getStatement, getStatementMedicine, getSuppliers,
     sendCustomRequest,
     updateStatement
 } from "../../../../shared/api";
@@ -63,28 +63,20 @@ export const EditStatementPage: FC = () => {
 
     const getData = useCallback(async () => {
         const statement = await getStatement(Number(id))
+        const responseTable = await getStatementMedicine(Number(id));
+
         statement.receipt_date = dayjs(statement.receipt_date.split('T')[0], 'YYYY-MM-DD');
-        const responseTable = await sendCustomRequest(`SELECT
-                                                                                                medicine.id,
-                                                                                                medicine.name,
-                                                                                                medicine.production_date,
-                                                                                                medicine.registration_num,
-                                                                                                medicine.expiration_date,
-                                                                                                statements_medicine.price_that_time,
-                                                                                                statements_medicine.quantity
-                                                                                            FROM
-                                                                                                statements_medicine
-                                                                                            JOIN
-                                                                                                medicine ON statements_medicine.medicine_id = medicine.id
-                                                                                            WHERE
-                                                                                                statements_medicine.statements_id = ${Number(id)}
-        `)
-        statement.medicines = responseTable.dataSource.map((data) => ({medicine: data.id, medicinePriceThatTime: data.price_that_time, medicineQuantity: data.quantity}))
+        statement.medicines = responseTable.map((data) => ({medicine: data.id, medicinePriceThatTime: data.price_that_time, medicineQuantity: data.quantity}))
         form.setFieldsValue(statement);
+
         const suppliers = await getSuppliers()
         const medicines = await getMedicines();
+
         const finallySuppliers = suppliers.map((supplier: Supplier) => ({label: supplier.name, value: supplier.id}))
-        const finallyMedicines = medicines.map((medicine: Medicine) => ({label: medicine.name, value:medicine.id}))
+        const finallyMedicines = medicines
+            .filter((medicine, index, self) => index === self.findIndex((m) => m.name === medicine.name))
+            .map((medicine: Medicine) => ({label: medicine.name, value:medicine.id}))
+
         setSupplierOptions(finallySuppliers)
         setMedicineOptions(finallyMedicines)
         setMedicines(medicines)

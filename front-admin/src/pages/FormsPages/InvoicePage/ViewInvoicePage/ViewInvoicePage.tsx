@@ -2,7 +2,7 @@ import {FC, useCallback, useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {Button, Card, ConfigProvider, Form, Input, Table} from "antd";
 import "./ViewInvoicePage.scss"
-import {getInvoice, sendCustomRequest} from "../../../../shared/api";
+import {getInvoice, getInvoiceMedicine} from "../../../../shared/api";
 import {Invoice} from "../InvoicePage.tsx";
 import {Arrow} from "../../../../shared/components/SVG/Arrow/Arrow.tsx";
 import Column from "antd/es/table/Column";
@@ -17,25 +17,11 @@ export const ViewInvoicePage: FC = () => {
 
     const getData = useCallback(async () => {
         const result = await getInvoice(Number(id));
-        setInvoice(result)
+        const responseTable = await getInvoiceMedicine(Number(id))
         result['discharge_date'] = result['discharge_date'].split('T')[0]
         form.setFieldsValue(result)
-        const responseTable = await sendCustomRequest(`SELECT
-                                                                                               medicine.id,
-                                                                                                medicine.name,
-                                                                                                medicine.production_date,
-                                                                                                medicine.registration_num,
-                                                                                                medicine.expiration_date,
-                                                                                                invoice_medicine.price_that_time,
-                                                                                                invoice_medicine.quantity
-                                                                                            FROM
-                                                                                                invoice_medicine
-                                                                                            JOIN
-                                                                                                medicine ON invoice_medicine.medicine_id = medicine.id
-                                                                                            WHERE
-                                                                                                invoice_medicine.invoice_id = ${Number(id)}
-        `)
-        setDataSource(responseTable?.dataSource)
+        setInvoice(result)
+        setDataSource(responseTable)
     }, [])
 
     useEffect(() => {

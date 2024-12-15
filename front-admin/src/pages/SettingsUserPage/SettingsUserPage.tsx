@@ -31,7 +31,7 @@ export const SettingsUserPage: FC = () => {
 
     useEffect(() => {
         getUsersForTable()
-    }, [dataSource]);
+    }, [getUsersForTable]);
 
     return (
         <>
@@ -57,12 +57,13 @@ export const SettingsUserPage: FC = () => {
                               }
                         >
                             <Table dataSource={dataSource} bordered>
-                                <Column title="ID" dataIndex="id" key="id"/>
+                                <Column title="ID" dataIndex="id" key="id" width="3%"/>
                                 <Column title="Логин" dataIndex="login" key='login'/>
                                 {(permissions[0].delete_permission || permissions[0].edit_permission) &&
                                     <Column
                                         title="Действия"
                                         key="action"
+                                        width="15%"
                                         render={(_: any, record) => (
                                             <Space size={"middle"}>
                                                 <Button variant="solid" color="default"

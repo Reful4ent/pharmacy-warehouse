@@ -1,7 +1,7 @@
 import {FC, useCallback, useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {Button, Card, ConfigProvider, Form, Input, Table} from "antd";
-import { getStatement, sendCustomRequest} from "../../../../shared/api";
+import {getStatement, getStatementMedicine} from "../../../../shared/api";
 import {Arrow} from "../../../../shared/components/SVG/Arrow/Arrow.tsx";
 import Column from "antd/es/table/Column";
 import {Statement} from "../StatementPage.tsx";
@@ -16,25 +16,13 @@ export const ViewStatementPage: FC = () => {
 
     const getData = useCallback(async () => {
         const result = await getStatement(Number(id));
-        setStatement(result)
+        const responseTable = await getStatementMedicine(Number(id))
+
         result['receipt_date'] = result['receipt_date'].split('T')[0]
         form.setFieldsValue(result)
-        const responseTable = await sendCustomRequest(`SELECT
-                                                                                                medicine.id,
-                                                                                                medicine.name,
-                                                                                                medicine.production_date,
-                                                                                                medicine.registration_num,
-                                                                                                medicine.expiration_date,
-                                                                                                statements_medicine.price_that_time,
-                                                                                                statements_medicine.quantity
-                                                                                            FROM
-                                                                                                statements_medicine
-                                                                                            JOIN
-                                                                                                medicine ON statements_medicine.medicine_id = medicine.id
-                                                                                            WHERE
-                                                                                                statements_medicine.statements_id = ${Number(id)}
-        `)
-        setDataSource(responseTable?.dataSource)
+
+        setStatement(result)
+        setDataSource(responseTable)
     }, [])
 
     useEffect(() => {

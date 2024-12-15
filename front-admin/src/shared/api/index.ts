@@ -773,7 +773,7 @@ export const createMedicine = async (medicine: Medicine) => {
 
         const id = result.data.id;
 
-        for (const packages_id of medicine.package_name) {
+        for (const packages_id of medicine?.package_name) {
             try {
                 await sendCustomRequest(`INSERT INTO medicine_package (medicine_id, package_id) VALUES (${id},${packages_id})`);
             } catch (error) {
@@ -781,7 +781,7 @@ export const createMedicine = async (medicine: Medicine) => {
             }
         }
 
-        for(const producers_id of medicine.producer_name) {
+        for(const producers_id of medicine?.producer_name) {
             try {
                 await sendCustomRequest(`INSERT INTO medicine_producer (medicine_id, producer_id) VALUES (${id},${producers_id})`);
             } catch (error) {
@@ -790,7 +790,7 @@ export const createMedicine = async (medicine: Medicine) => {
         }
 
 
-        for (const category_id of medicine.category_names) {
+        for (const category_id of medicine?.category_names) {
             try {
                 await sendCustomRequest(`INSERT INTO medicine_category (medicine_id, category_id) VALUES (${id},${category_id})`);
             } catch (error) {
@@ -841,7 +841,7 @@ export const updateMedicine = async (medicine: Medicine) => {
         }
 
 
-        for (const packages_id of medicine.package_name) {
+        for (const packages_id of medicine?.package_name) {
             try {
                 await sendCustomRequest(`INSERT INTO medicine_package (medicine_id, package_id) VALUES (${medicine.id},${packages_id})`);
             } catch (error) {
@@ -849,7 +849,7 @@ export const updateMedicine = async (medicine: Medicine) => {
             }
         }
 
-        for(const producers_id of medicine.producer_name) {
+        for(const producers_id of medicine?.producer_name) {
             try {
                 await sendCustomRequest(`INSERT INTO medicine_producer (medicine_id, producer_id) VALUES (${medicine.id},${producers_id})`);
             } catch (error) {
@@ -858,7 +858,7 @@ export const updateMedicine = async (medicine: Medicine) => {
         }
 
 
-        for (const category_id of medicine.category_names) {
+        for (const category_id of medicine?.category_names) {
             try {
                 await sendCustomRequest(`INSERT INTO medicine_category (medicine_id, category_id) VALUES (${medicine.id},${category_id})`);
             } catch (error) {
@@ -1501,6 +1501,38 @@ export const updateStatement = async (statement: Statement, medicines: MedicineT
         return true;
     } catch (error: any) {
         console.log(error.response.data.error);
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+
+export const getInvoiceMedicine = async (id: number) => {
+    try {
+        const result = await axios.get(
+            urlRoute + '/invoiceMedicines/' + id,
+
+        )
+        return result.data;
+    }  catch (error: any) {
+        return {
+            dataSource:[],
+            error: error.response.data.error
+        };
+    }
+}
+
+
+export const getStatementMedicine = async (id: number) => {
+    try {
+        const result = await axios.get(
+            urlRoute + '/statementMedicines/' + id,
+
+        )
+        return result.data;
+    }  catch (error: any) {
         return {
             dataSource:[],
             error: error.response.data.error

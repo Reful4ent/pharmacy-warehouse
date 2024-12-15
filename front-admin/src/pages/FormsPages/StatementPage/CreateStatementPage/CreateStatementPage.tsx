@@ -67,17 +67,23 @@ export const CreateStatementPage: FC = () => {
                                                                                             statements 
                                                                                      WHERE id = (SELECT MAX(id) FROM statements)
         `);
+
         let max_id = String(Number(response.dataSource[0].number)+ 1);
         const length = String(max_id).length;
         for(let i = 0; i<10-length; i++)
             max_id = '0' + max_id;
+
         form.setFieldValue('number', max_id)
         form.setFieldValue('total_sum', 0)
 
         const suppliers = await getSuppliers()
         const medicines = await getMedicines();
+
         const finallySuppliers = suppliers.map((supplier: Supplier) => ({label: supplier.name, value: supplier.id}))
-        const finallyMedicines = medicines.map((medicine: Medicine) => ({label: medicine.name, value:medicine.id}))
+        const finallyMedicines = medicines
+            .filter((medicine, index, self) => index === self.findIndex((m) => m.name === medicine.name))
+            .map((medicine: Medicine) => ({label: medicine.name, value:medicine.id}))
+
         setSupplierOptions(finallySuppliers)
         setMedicineOptions(finallyMedicines)
         setMedicines(medicines)

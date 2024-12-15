@@ -78,7 +78,9 @@ export const CreateInvoicePage: FC = () => {
         const medicines = await getMedicines();
         const finallyEmployees = employees.map((employee: Employee) => ({label: employee.surname, value: employee.id}))
         const finallyBuyers = buyers.map((buyer: Buyer) => ({label: buyer.name, value:buyer.id}))
-        const finallyMedicines = medicines.map((medicine: Medicine) => ({label: medicine.name, value:medicine.id}))
+        const finallyMedicines = medicines
+            .filter((medicine, index, self) => index === self.findIndex((m) => m.name === medicine.name))
+            .map((medicine: Medicine) => ({label: medicine.name, value:medicine.id}))
         setBuyerOptions(finallyBuyers)
         setEmployeeOptions(finallyEmployees)
         setMedicineOptions(finallyMedicines)
