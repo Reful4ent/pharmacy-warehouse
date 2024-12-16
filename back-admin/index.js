@@ -26,6 +26,7 @@ const medicineProducerRouter = require('./src/medicine_category/routes/medicine_
 const menuContextRouter = require('./src/menu_context/routes/menu_context.routes');
 const usersContextRouter = require('./src/users/routes/users.routes');
 const usersPermissionsContextRouter = require('./src/users_permissions/routes/users_permissions.routes');
+const filesRouter = require('./src/files/routes/files.routes');
 
 const routes = [
     countryRouter,
@@ -50,6 +51,7 @@ const routes = [
     menuContextRouter,
     usersContextRouter,
     usersPermissionsContextRouter,
+    filesRouter,
 ];
 
 const app = express();
