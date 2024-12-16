@@ -1539,3 +1539,4 @@ export const getStatementMedicine = async (id: number) => {
         };
     }
 }
+
