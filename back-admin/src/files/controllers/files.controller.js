@@ -9,6 +9,9 @@ const CONCRETE_NAMES = ['invoice', 'statements']
 class FilesController {
     async createWord(req, res) {
         const nameDb = req.params.name ?? '';
+        const number = req.query.number
+
+
         let responseDb;
         try {
             if(nameDb === 'invoice') {
@@ -33,7 +36,8 @@ class FilesController {
                                             JOIN
                                                 buyer ON invoice.buyer_id = buyer.id
                                             JOIN 
-                                                medicine ON invoice_medicine.medicine_id = medicine.id;`);
+                                                medicine ON invoice_medicine.medicine_id = medicine.id
+                                            WHERE ($1::text IS NULL OR number ILIKE $1)`,[`%${number}%`]);
             } else if (nameDb === 'statements') {
                 responseDb = await db.query(`SELECT 
                                                 statements.number AS "Номер", 
@@ -97,6 +101,7 @@ class FilesController {
 
     async createExcel(req, res) {
         const nameDb = req.params.name ?? '';
+        const number = req.query.number
 
         let responseDb;
         try {
@@ -122,7 +127,8 @@ class FilesController {
                                             JOIN
                                                 buyer ON invoice.buyer_id = buyer.id
                                             JOIN 
-                                                medicine ON invoice_medicine.medicine_id = medicine.id;`);
+                                                medicine ON invoice_medicine.medicine_id = medicine.id
+                                            WHERE ($1::text IS NULL OR number ILIKE $1)`,[`%${number}%`]);
             } else if (nameDb === 'statements') {
                 responseDb = await db.query(`SELECT 
                                                 statements.number AS "Номер", 
