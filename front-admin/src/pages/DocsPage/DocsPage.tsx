@@ -1,5 +1,5 @@
-import {FC} from "react";
-import {Button, Card, ConfigProvider, Space, Table} from "antd";
+import {FC, useState} from "react";
+import {Button, Card, ConfigProvider, Input, Space, Table} from "antd";
 import Column from "antd/es/table/Column";
 import './DocsPage.scss'
 import {Link} from "react-router-dom";
@@ -13,10 +13,10 @@ export type TableName = {
 
 
 export const DocsPage: FC = () => {
+    const [inputField, setInputField] = useState('')
 
     const initialTableNames: TableName[] = [
         { name: 'Счет-фактуры', nameInBD: 'invoice'},
-        { name: 'Приходные накладные', nameInBD: 'statements'},
     ]
 
     return (
@@ -37,11 +37,12 @@ export const DocsPage: FC = () => {
                             <Column
                                 title="Действия"
                                 key="action"
-                                width="10%"
+                                width="30%"
                                 render={(_: any, record) => (
                                     <Space size={"middle"}>
-                                        <Button style={{backgroundColor: "#1E90FF", color: "white"}}><Link to={'http://localhost:1337/api/word/create/' + record.nameInBD} target="_blank">Word</Link></Button>
-                                        <Button type="primary"><Link to={'http://localhost:1337/api/excel/create/' + record.nameInBD} target="_blank">Excel</Link></Button>
+                                        <Input prefix={'Номер счет-фактуры:'} onChange={(e) => setInputField(e.target.value)}/>
+                                        <Button style={{backgroundColor: "#1E90FF", color: "white"}}><Link to={'http://localhost:1337/api/word/create/' + record.nameInBD + '?number=' + inputField} target="_blank">Word</Link></Button>
+                                        <Button type="primary"><Link to={'http://localhost:1337/api/excel/create/' + record.nameInBD + '?number=' + inputField} target="_blank">Excel</Link></Button>
                                     </Space>
                                 )}
                             />
